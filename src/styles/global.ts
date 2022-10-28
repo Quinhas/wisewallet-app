@@ -9,6 +9,7 @@ import {
 	Button,
 	Checkbox,
 	Input,
+	Link,
 	MenuItem,
 	StatementListItem
 } from './styledComponents';
@@ -20,11 +21,12 @@ const theme = extendTheme({
 		MenuItem,
 		Checkbox,
 		AccountCard,
-		StatementListItem
+		StatementListItem,
+		Link
 	},
 	styles: {
 		global: (props: GlobalStyleProps) => ({
-			'#__next': {
+			'#root': {
 				display: 'flex',
 				minHeight: '100vh',
 				flexDirection: 'column'
@@ -41,7 +43,8 @@ const theme = extendTheme({
 				},
 				_active: {
 					color: 'primaryApp.800'
-				}
+				},
+				textDecoration: 'none'
 			},
 			label: {
 				fontFamily: 'heading',
