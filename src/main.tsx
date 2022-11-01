@@ -9,7 +9,6 @@ import '@fontsource/poppins/300.css';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/700.css';
 import { AuthContextProvider } from 'contexts/AuthContext';
-import { WisewalletContextProvider } from 'contexts/WisewalletContext';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -21,10 +20,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 		<BrowserRouter>
 			<ChakraProvider theme={theme}>
 				<AuthContextProvider>
-					<WisewalletContextProvider>
-						<ColorModeScript />
-						<CustomRoutes />
-					</WisewalletContextProvider>
+					<ColorModeScript />
+					<CustomRoutes />
 				</AuthContextProvider>
 			</ChakraProvider>
 		</BrowserRouter>

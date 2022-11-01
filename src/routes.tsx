@@ -1,8 +1,10 @@
 import { Flex, Spinner, Text } from '@chakra-ui/react';
 import Navbar from 'components/Navbar';
 import Tabs from 'components/Tabs';
+import { WisewalletContextProvider } from 'contexts/WisewalletContext';
 import { useAuth } from 'hooks/useAuth';
 import App from 'pages/App';
+import { ProfilePage } from 'pages/profile';
 import { SignInPage } from 'pages/signin';
 import { SignUpPage } from 'pages/signup';
 import { Navigate, Route, Routes } from 'react-router-dom';
@@ -45,7 +47,7 @@ function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element {
 		return <Navigate to="/signin" />;
 	}
 
-	return children;
+	return <WisewalletContextProvider>{children}</WisewalletContextProvider>;
 }
 
 export function CustomRoutes(): JSX.Element {
@@ -70,6 +72,18 @@ export function CustomRoutes(): JSX.Element {
 			<Route
 				path="/signup"
 				element={<SignUpPage />}
+			/>
+			<Route
+				path="/profile"
+				element={
+					<ProtectedRoute>
+						<>
+							<Navbar />
+							<ProfilePage />
+							<Tabs />
+						</>
+					</ProtectedRoute>
+				}
 			/>
 		</Routes>
 	);

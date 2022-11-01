@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import type { ReactNode } from 'react';
 import {
@@ -18,6 +19,10 @@ import type {
 interface UserProps {
 	id: string;
 	name: string;
+	email: string;
+	birthdate: string;
+	createdAt: string;
+	updatedAt: string;
 }
 
 export interface AuthContextProps {
@@ -45,25 +50,40 @@ export function AuthContextProvider({
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	function validateToken(token: string): UserProps {
-		const decodedToken = jwtDecode<JwtPayload & UserProps>(token);
-		if (!decodedToken.exp || decodedToken.exp <= Date.now() / 1000) {
-			throw Error();
-		}
-
-		return {
-			id: decodedToken.id,
-			name: decodedToken.name
-		};
-	}
-
 	const signOut = useCallback(() => {
+		localStorage.removeItem('wisewallet@accessToken');
 		setUser(undefined);
 		setIsLogged(false);
-		localStorage.removeItem('wisewallet@accessToken');
 		navigate('/signin');
 		setIsLoading(false);
 	}, [navigate]);
+
+	const validateToken = useCallback(
+		(token: string): UserProps => {
+			try {
+				const decodedToken = jwtDecode<JwtPayload & UserProps>(token);
+				if (!decodedToken.exp || decodedToken.exp <= Date.now() / 1000) {
+					throw Error();
+				}
+				localStorage.setItem('wisewallet@accessToken', token);
+
+				const birthdate = decodedToken.birthdate.split('T')[0];
+				return {
+					id: decodedToken.id,
+					name: decodedToken.name,
+					email: decodedToken.email,
+					birthdate: format(parseISO(birthdate), 'P'),
+					createdAt: format(parseISO(decodedToken.createdAt), 'PPPp'),
+					updatedAt: format(parseISO(decodedToken.updatedAt), 'PPPp')
+				};
+			} catch (error) {
+				console.log('AuthContextError: ', error);
+				signOut();
+				throw Error();
+			}
+		},
+		[signOut]
+	);
 
 	useEffect(() => {
 		try {
@@ -109,16 +129,18 @@ export function AuthContextProvider({
 		}
 	}, [signOut, isLoading, isLogged, location.pathname, navigate]);
 
-	const signIn = useCallback(async ({ email, password }: SignInParams) => {
-		const res = await wisewallet.signIn({
-			email,
-			password
-		});
-		const data = validateToken(res.access_token);
-		setUser(data);
-		localStorage.setItem('wisewallet@accessToken', res.access_token);
-		setIsLogged(true);
-	}, []);
+	const signIn = useCallback(
+		async ({ email, password }: SignInParams) => {
+			const res = await wisewallet.signIn({
+				email,
+				password
+			});
+			const data = validateToken(res.access_token);
+			setUser(data);
+			setIsLogged(true);
+		},
+		[validateToken]
+	);
 
 	const signUp = useCallback(
 		async ({ name, email, password, birthdate }: SignUpParams) => {
@@ -130,10 +152,9 @@ export function AuthContextProvider({
 			});
 			const data = validateToken(res.access_token);
 			setUser(data);
-			localStorage.setItem('wisewallet@accessToken', res.access_token);
 			setIsLogged(true);
 		},
-		[]
+		[validateToken]
 	);
 
 	const value = useMemo(

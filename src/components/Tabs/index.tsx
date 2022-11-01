@@ -1,4 +1,4 @@
-import { Flex, Icon, Text, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Icon, useColorModeValue } from '@chakra-ui/react';
 import { HouseLine, Receipt, UserCircleGear } from 'phosphor-react';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -55,7 +55,7 @@ export default function Tabs(): JSX.Element {
 						color={
 							location.pathname === tab.href ? 'primaryApp.300' : 'gray.400'
 						}
-						transition="0.2s ease-in"
+						transition="0.05s ease-in"
 						_hover={{
 							color: 'primaryApp.400'
 						}}
@@ -70,7 +70,7 @@ export default function Tabs(): JSX.Element {
 							lineHeight="1rem"
 							transition="0.2s ease-in"
 						/>
-						{location.pathname === tab.href && (
+						{/* {location.pathname === tab.href && (
 							<Text
 								fontFamily="heading"
 								fontSize="1rem"
@@ -79,7 +79,7 @@ export default function Tabs(): JSX.Element {
 							>
 								{tab.text}
 							</Text>
-						)}
+						)} */}
 					</Flex>
 				</Link>
 			))}

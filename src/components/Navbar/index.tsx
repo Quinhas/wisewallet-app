@@ -1,5 +1,4 @@
 import {
-	Button,
 	Drawer,
 	DrawerBody,
 	DrawerCloseButton,
@@ -11,27 +10,14 @@ import {
 	Heading,
 	IconButton,
 	useColorModeValue,
-	useDisclosure,
-	useToast
+	useDisclosure
 } from '@chakra-ui/react';
 import Menu from 'components/Menu';
 import ToggleThemeButton from 'components/ToggleThemeButton';
-import { useAuth } from 'hooks/useAuth';
-import { List, SignOut } from 'phosphor-react';
-import { successToast } from 'utils/toastConfig';
+import { List } from 'phosphor-react';
 
 export default function Navbar(): JSX.Element {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const toast = useToast();
-	const { signOut } = useAuth();
-
-	const handleLogout = (): void => {
-		signOut();
-		toast({
-			...successToast,
-			description: 'User logged out successfully.'
-		});
-	};
 
 	return (
 		<>
@@ -79,14 +65,8 @@ export default function Navbar(): JSX.Element {
 						<Menu />
 					</DrawerBody>
 
-					<DrawerFooter justifyContent="space-between">
+					<DrawerFooter justifyContent="end">
 						<ToggleThemeButton />
-						<Button
-							onClick={handleLogout}
-							rightIcon={<SignOut />}
-						>
-							Sign Out
-						</Button>
 					</DrawerFooter>
 				</DrawerContent>
 			</Drawer>
