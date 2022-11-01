@@ -39,7 +39,8 @@
 		"react/jsx-props-no-spreading": "off",
 		"@typescript-eslint/no-misused-promises": "warn",
 		"comma-dangle": "off",
-		"prettier/prettier": "error"
+		"prettier/prettier": "error",
+		"@typescript-eslint/no-floating-promises": "off"
 	},
 	"ignorePatterns": [
 		"/src/vite-env.d.ts"

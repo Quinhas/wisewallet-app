@@ -1,4 +1,6 @@
 import { Flex, Spinner, Text } from '@chakra-ui/react';
+import Navbar from 'components/Navbar';
+import Tabs from 'components/Tabs';
 import { useAuth } from 'hooks/useAuth';
 import App from 'pages/App';
 import { SignInPage } from 'pages/signin';
@@ -53,7 +55,11 @@ export function CustomRoutes(): JSX.Element {
 				path="/"
 				element={
 					<ProtectedRoute>
-						<App />
+						<>
+							<Navbar />
+							<App />
+							<Tabs />
+						</>
 					</ProtectedRoute>
 				}
 			/>

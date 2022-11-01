@@ -10,8 +10,9 @@
 		"commit": "git-cz",
 		"gen:theme-typings": "chakra-cli tokens ./src/styles/global.ts",
 		"postinstall": "npm run gen:theme-typings",
-		"format": "prettier --write \"src/**/*.{ts,tsx}\"",
-		"lint": "eslint \"src/**/*.{ts,tsx}\""
+		"prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
+		"lint": "eslint \"src/**/*.{ts,tsx}\"",
+		"format": "yarn lint --fix && yarn prettier"
 	},
 	"dependencies": {
 		"@chakra-ui/react": "^2.3.6",
@@ -27,6 +28,7 @@
 		"date-fns": "^2.29.3",
 		"framer-motion": "^7.6.1",
 		"jwt-decode": "^3.1.2",
+		"phosphor-react": "^1.4.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.38.0",

@@ -3,16 +3,13 @@ import type { GlobalStyleProps } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 import { colors } from './colors';
 import { mediaQueries, scrollbar } from './custom';
-
-import {
-	AccountCard,
-	Button,
-	Checkbox,
-	Input,
-	Link,
-	MenuItem,
-	StatementListItem
-} from './styledComponents';
+import { AccountCard } from './styledComponents/AccountCard';
+import { Button } from './styledComponents/Button';
+import { Checkbox } from './styledComponents/Checkbox';
+import { Input } from './styledComponents/Input';
+import { Link } from './styledComponents/Link';
+import { MenuItem } from './styledComponents/MenuItem';
+import { StatementListItem } from './styledComponents/StatementListItem';
 
 const theme = extendTheme({
 	components: {

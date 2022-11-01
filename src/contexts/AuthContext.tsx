@@ -21,7 +21,6 @@ interface UserProps {
 }
 
 export interface AuthContextProps {
-	id: string | undefined;
 	user: UserProps | undefined;
 	isLogged: boolean;
 	signIn: (props: SignInParams) => Promise<void>;
@@ -40,7 +39,6 @@ export const AuthContext = createContext({} as AuthContextProps);
 export function AuthContextProvider({
 	children
 }: AuthContextProviderProps): JSX.Element {
-	const [id, setId] = useState<string | undefined>(undefined);
 	const [user, setUser] = useState<UserProps | undefined>(undefined);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isLogged, setIsLogged] = useState(false);
@@ -59,12 +57,12 @@ export function AuthContextProvider({
 		};
 	}
 
-	const handleLogout = useCallback(() => {
+	const signOut = useCallback(() => {
 		setUser(undefined);
-		setIsLoading(false);
 		setIsLogged(false);
-		localStorage.removeItem('token');
-		navigate('/entrar');
+		localStorage.removeItem('wisewallet@accessToken');
+		navigate('/signin');
+		setIsLoading(false);
 	}, [navigate]);
 
 	useEffect(() => {
@@ -77,11 +75,11 @@ export function AuthContextProvider({
 			setUser(data);
 			setIsLogged(true);
 		} catch (error) {
-			setIsLogged(false);
-			localStorage.removeItem('token');
+			signOut();
 		} finally {
 			setIsLoading(false);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	// eslint-disable-next-line consistent-return
@@ -96,7 +94,7 @@ export function AuthContextProvider({
 				(err) => {
 					if (axios.isAxiosError(err)) {
 						if (err.response?.status === 401) {
-							handleLogout();
+							signOut();
 							return {};
 						}
 					}
@@ -109,7 +107,7 @@ export function AuthContextProvider({
 				axios.interceptors.response.eject(interceptor);
 			};
 		}
-	}, [handleLogout, isLoading, isLogged, location.pathname, navigate]);
+	}, [signOut, isLoading, isLogged, location.pathname, navigate]);
 
 	const signIn = useCallback(async ({ email, password }: SignInParams) => {
 		const res = await wisewallet.signIn({
@@ -120,14 +118,6 @@ export function AuthContextProvider({
 		setUser(data);
 		localStorage.setItem('wisewallet@accessToken', res.access_token);
 		setIsLogged(true);
-	}, []);
-
-	const signOut = useCallback(() => {
-		setIsLoading(true);
-		setIsLogged(false);
-		localStorage.removeItem('wisewallet@accessToken');
-		setUser(undefined);
-		setId(undefined);
 	}, []);
 
 	const signUp = useCallback(
@@ -148,7 +138,6 @@ export function AuthContextProvider({
 
 	const value = useMemo(
 		() => ({
-			id,
 			user,
 			isLogged,
 			signIn,
@@ -156,7 +145,7 @@ export function AuthContextProvider({
 			signOut,
 			isLoading
 		}),
-		[id, user, isLogged, signIn, signOut, signUp, isLoading]
+		[user, isLogged, signIn, signOut, signUp, isLoading]
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
