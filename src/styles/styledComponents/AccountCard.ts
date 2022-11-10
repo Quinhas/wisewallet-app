@@ -37,7 +37,11 @@ export const AccountCard = defineStyleConfig({
 				fontFamily: 'mono',
 				fontSize: '1rem',
 				textTransform: 'uppercase',
-				color: chroma(hexValue[300]).darken().hex()
+				color: chroma(hexValue[300]).darken().hex(),
+				maxW: 'calc(100% - 2.5rem)',
+				overflow: 'hidden',
+				whiteSpace: 'nowrap',
+				textOverflow: 'ellipsis'
 			},
 			'.iconBox': {
 				display: 'flex',
@@ -45,6 +49,7 @@ export const AccountCard = defineStyleConfig({
 				justifyContent: 'center',
 				bgColor: c ? `${c}.600` : 'primaryApp.300',
 				w: '2rem',
+				minW: '2rem',
 				h: '2rem',
 				borderRadius: 'md',
 				color: 'white'

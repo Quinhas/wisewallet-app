@@ -40,7 +40,9 @@
 		"@typescript-eslint/no-misused-promises": "warn",
 		"comma-dangle": "off",
 		"prettier/prettier": "error",
-		"@typescript-eslint/no-floating-promises": "off"
+		"@typescript-eslint/no-floating-promises": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"react/jsx-no-bind": "off"
 	},
 	"ignorePatterns": [
 		"/src/vite-env.d.ts"

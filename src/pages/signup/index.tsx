@@ -22,7 +22,7 @@ import {
 	invalidAgeMessage,
 	invalidDateMessage,
 	invalidEmailMessage,
-	passwordMinMessage,
+	minLengthMessage,
 	requiredFieldMessage,
 	termsAndConditionsMessage
 } from 'utils/formValidationMessages';
@@ -42,7 +42,7 @@ const schema = yup.object({
 	email: yup.string().email(invalidEmailMessage).required(requiredFieldMessage),
 	password: yup
 		.string()
-		.min(6, passwordMinMessage)
+		.min(6, minLengthMessage('password', 6))
 		.required(requiredFieldMessage),
 	birthdate: yup
 		.date()

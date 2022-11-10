@@ -1,53 +1,37 @@
-import { Flex, Spinner, Text } from '@chakra-ui/react';
+import { Loading } from 'components/Loading';
 import Navbar from 'components/Navbar';
 import Tabs from 'components/Tabs';
 import { WisewalletContextProvider } from 'contexts/WisewalletContext';
 import { useAuth } from 'hooks/useAuth';
+import { AccountDetailsPage } from 'pages/account-details';
 import App from 'pages/App';
+import { EditAccountPage } from 'pages/edit-account';
 import { ProfilePage } from 'pages/profile';
 import { SignInPage } from 'pages/signin';
 import { SignUpPage } from 'pages/signup';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
 function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element {
-	const { isLoading, isLogged } = useAuth();
+	const { isLoading, isLogged, user, signOut } = useAuth();
 
 	if (isLoading) {
-		return (
-			<Flex
-				w="100vw"
-				h="100vh"
-				align="center"
-				justify="center"
-			>
-				<Flex
-					direction="column"
-					align="center"
-					gridGap="1.5rem"
-					bg="white"
-					boxShadow="md"
-					py="2rem"
-					px="4rem"
-					borderRadius="md"
-				>
-					<Spinner
-						thickness="4px"
-						speed="0.65s"
-						emptyColor="gray.200"
-						color="primaryApp.300"
-						size="xl"
-					/>
-					<Text color="gray.500">Loading...</Text>
-				</Flex>
-			</Flex>
-		);
+		return <Loading />;
 	}
 
-	if (!isLogged) {
+	if (!isLogged || !user) {
+		signOut();
 		return <Navigate to="/signin" />;
 	}
 
-	return <WisewalletContextProvider>{children}</WisewalletContextProvider>;
+	return (
+		<WisewalletContextProvider>
+			<>
+				<Navbar />
+				{children}
+				<Tabs />
+			</>
+		</WisewalletContextProvider>
+	);
 }
 
 export function CustomRoutes(): JSX.Element {
@@ -57,31 +41,39 @@ export function CustomRoutes(): JSX.Element {
 				path="/"
 				element={
 					<ProtectedRoute>
-						<>
-							<Navbar />
-							<App />
-							<Tabs />
-						</>
+						<App />
 					</ProtectedRoute>
 				}
 			/>
 			<Route
-				path="/signin"
+				path="signin"
 				element={<SignInPage />}
 			/>
 			<Route
-				path="/signup"
+				path="signup"
 				element={<SignUpPage />}
 			/>
 			<Route
-				path="/profile"
+				path="profile"
 				element={
 					<ProtectedRoute>
-						<>
-							<Navbar />
-							<ProfilePage />
-							<Tabs />
-						</>
+						<ProfilePage />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/account/:id"
+				element={
+					<ProtectedRoute>
+						<AccountDetailsPage />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/account/:id/edit"
+				element={
+					<ProtectedRoute>
+						<EditAccountPage />
 					</ProtectedRoute>
 				}
 			/>

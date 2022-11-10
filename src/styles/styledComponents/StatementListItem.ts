@@ -9,6 +9,7 @@ export const StatementListItem = defineStyleConfig({
 			background: mode('white', 'black')(props),
 			height: '4rem',
 			w: '100%',
+			borderRadius: 'md',
 			borderBottom: '0.5px solid',
 			borderBottomColor: `${mode('gray.200', 'gray.900')(props)}`,
 			boxSizing: 'border-box',

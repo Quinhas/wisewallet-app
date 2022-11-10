@@ -13,6 +13,7 @@ import { wisewallet } from 'services/wisewalletService';
 import {
 	BankAccount,
 	DeleteBankAccountParams,
+	GetBankAccountByIDParams,
 	UpdateBankAccountParams
 } from 'services/wisewalletService/bankAccountsService';
 import { errorToast, successToast } from 'utils/toastConfig';
@@ -20,6 +21,9 @@ import { errorToast, successToast } from 'utils/toastConfig';
 export interface WisewalletContextProps {
 	bankAccounts: BankAccount[];
 	balance: number;
+	getBankAccount: (
+		data: GetBankAccountByIDParams
+	) => Promise<BankAccount | null>;
 	updateBankAccount: (data: UpdateBankAccountParams) => Promise<void>;
 	deleteBankAccount: (data: DeleteBankAccountParams) => Promise<void>;
 }
@@ -69,6 +73,35 @@ export function WisewalletContextProvider({
 			});
 		}
 	}, [toast]);
+
+	const getBankAccount = useCallback(
+		async ({ id }: GetBankAccountByIDParams): Promise<BankAccount | null> => {
+			try {
+				const data = await wisewallet.getBankAccountByID({ id });
+				return data;
+			} catch (error) {
+				if (error instanceof WisewalletApplicationException) {
+					if (error.errors?.length !== 0) {
+						error.errors?.forEach((err) => {
+							toast({
+								...errorToast,
+								description: err.message
+							});
+						});
+						return null;
+					}
+				}
+
+				toast({
+					...errorToast,
+					description: 'Could not get bank accounts. Try again.'
+				});
+			}
+
+			return null;
+		},
+		[toast]
+	);
 
 	const updateBankAccount = useCallback(
 		async ({ id, bankAccount }: UpdateBankAccountParams): Promise<void> => {
@@ -161,10 +194,17 @@ export function WisewalletContextProvider({
 		() => ({
 			bankAccounts,
 			balance,
+			getBankAccount,
 			updateBankAccount,
 			deleteBankAccount
 		}),
-		[bankAccounts, balance, updateBankAccount, deleteBankAccount]
+		[
+			bankAccounts,
+			balance,
+			getBankAccount,
+			updateBankAccount,
+			deleteBankAccount
+		]
 	);
 
 	return (

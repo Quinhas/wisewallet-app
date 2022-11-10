@@ -18,7 +18,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
 import {
 	invalidEmailMessage,
-	passwordMinMessage,
+	minLengthMessage,
 	requiredFieldMessage
 } from 'utils/formValidationMessages';
 import { errorToast, successToast } from 'utils/toastConfig';
@@ -33,7 +33,7 @@ const schema = yup.object({
 	email: yup.string().email(invalidEmailMessage).required(requiredFieldMessage),
 	password: yup
 		.string()
-		.min(6, passwordMinMessage)
+		.min(6, minLengthMessage('password', 6))
 		.required(requiredFieldMessage)
 });
 

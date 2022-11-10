@@ -11,11 +11,30 @@ export interface BankAccount {
 	holderId: string;
 	createdAt: Date;
 	updatedAt: Date;
+	transactions?: AccountTransaction[];
+}
+
+export interface AccountTransaction {
+	id: string;
+	holderId: string;
+	title: string;
+	description?: string;
+	value: number;
+	date: Date;
+	type: 'INCOME' | 'EXPENSE';
+	bankAccountId: string;
+	categoryId?: number;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface BankAccountDTO {
 	name: string;
 	balance: number;
+}
+
+export interface GetBankAccountByIDParams {
+	id: string;
 }
 
 export interface UpdateBankAccountParams {
@@ -30,6 +49,25 @@ export interface DeleteBankAccountParams {
 async function getAllBankAccounts(): Promise<BankAccount[]> {
 	try {
 		const { data } = await httpClient.get<BankAccount[]>('/accounts/', {
+			headers: { Authorization: `Bearer ${getAccessToken()}` }
+		});
+		return data;
+	} catch (error: unknown) {
+		if (axios.isAxiosError(error)) {
+			const { data } = error.response as { data: ErrorResponse };
+			throw new WisewalletApplicationException(data.message, data.errors);
+		}
+
+		throw new WisewalletApplicationException(
+			'Could not continue. Contact an administrator.'
+		);
+	}
+}
+async function getBankAccountByID({
+	id
+}: GetBankAccountByIDParams): Promise<BankAccount> {
+	try {
+		const { data } = await httpClient.get<BankAccount>(`/accounts/${id}`, {
 			headers: { Authorization: `Bearer ${getAccessToken()}` }
 		});
 		return data;
@@ -92,6 +130,7 @@ async function deleteBankAccount({
 
 export const bankAccounts = {
 	getAllBankAccounts,
+	getBankAccountByID,
 	updateBankAccount,
 	deleteBankAccount
 };
