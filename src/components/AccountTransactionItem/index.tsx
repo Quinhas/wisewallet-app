@@ -5,8 +5,7 @@ import { AccountTransaction } from 'services/wisewalletService/bankAccountsServi
 
 interface AccountTransactionItemProps
 	extends AccountTransaction,
-	Partial<StyleFunctionProps> {
-}
+		Partial<StyleFunctionProps> {}
 
 export default function AccountTransactionItem({
 	title,

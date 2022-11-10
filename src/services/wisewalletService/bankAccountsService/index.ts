@@ -33,8 +33,23 @@ export interface BankAccountDTO {
 	balance: number;
 }
 
+export interface AccountTransactionDTO {
+	title: string;
+	description?: string;
+	value: number;
+	date: Date;
+	type: 'INCOME' | 'EXPENSE';
+	bankAccountId: string;
+	categoryId?: number;
+	isRecurrent?: boolean;
+}
+
 export interface GetBankAccountByIDParams {
 	id: string;
+}
+
+export interface CreateAccountTransactionParams {
+	accountTransaction: AccountTransactionDTO;
 }
 
 export interface UpdateBankAccountParams {
@@ -46,91 +61,113 @@ export interface DeleteBankAccountParams {
 	id: string;
 }
 
-async function getAllBankAccounts(): Promise<BankAccount[]> {
-	try {
-		const { data } = await httpClient.get<BankAccount[]>('/accounts/', {
-			headers: { Authorization: `Bearer ${getAccessToken()}` }
-		});
-		return data;
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			const { data } = error.response as { data: ErrorResponse };
-			throw new WisewalletApplicationException(data.message, data.errors);
-		}
-
-		throw new WisewalletApplicationException(
-			'Could not continue. Contact an administrator.'
-		);
-	}
-}
-async function getBankAccountByID({
-	id
-}: GetBankAccountByIDParams): Promise<BankAccount> {
-	try {
-		const { data } = await httpClient.get<BankAccount>(`/accounts/${id}`, {
-			headers: { Authorization: `Bearer ${getAccessToken()}` }
-		});
-		return data;
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			const { data } = error.response as { data: ErrorResponse };
-			throw new WisewalletApplicationException(data.message, data.errors);
-		}
-
-		throw new WisewalletApplicationException(
-			'Could not continue. Contact an administrator.'
-		);
-	}
-}
-
-async function updateBankAccount({
-	id,
-	bankAccount
-}: UpdateBankAccountParams): Promise<BankAccount> {
-	try {
-		const { data } = await httpClient.put<BankAccount>(
-			`/accounts/${id}`,
-			bankAccount,
-			{
-				headers: { Authorization: `Bearer ${getAccessToken()}` }
-			}
-		);
-		return data;
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			const { data } = error.response as { data: ErrorResponse };
-			throw new WisewalletApplicationException(data.message, data.errors);
-		}
-
-		throw new WisewalletApplicationException(
-			'Could not continue. Contact an administrator.'
-		);
-	}
-}
-
-async function deleteBankAccount({
-	id
-}: DeleteBankAccountParams): Promise<BankAccount> {
-	try {
-		const { data } = await httpClient.delete<BankAccount>(`/accounts/${id}`, {
-			headers: { Authorization: `Bearer ${getAccessToken()}` }
-		});
-		return data;
-	} catch (error: unknown) {
-		if (axios.isAxiosError(error)) {
-			const { data } = error.response as { data: ErrorResponse };
-			throw new WisewalletApplicationException(data.message, data.errors);
-		}
-
-		throw new WisewalletApplicationException(
-			'Could not continue. Contact an administrator.'
-		);
-	}
-}
-
 export const bankAccounts = {
-	getAllBankAccounts,
-	getBankAccountByID,
-	updateBankAccount,
-	deleteBankAccount
+	async getAllBankAccounts(): Promise<BankAccount[]> {
+		try {
+			const { data } = await httpClient.get<BankAccount[]>('/accounts/', {
+				headers: { Authorization: `Bearer ${getAccessToken()}` }
+			});
+			return data;
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				const { data } = error.response as { data: ErrorResponse };
+				throw new WisewalletApplicationException(data.message, data.errors);
+			}
+
+			throw new WisewalletApplicationException(
+				'Could not continue. Contact an administrator.'
+			);
+		}
+	},
+
+	async getBankAccountByID({
+		id
+	}: GetBankAccountByIDParams): Promise<BankAccount> {
+		try {
+			const { data } = await httpClient.get<BankAccount>(`/accounts/${id}`, {
+				headers: { Authorization: `Bearer ${getAccessToken()}` }
+			});
+			return data;
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				const { data } = error.response as { data: ErrorResponse };
+				throw new WisewalletApplicationException(data.message, data.errors);
+			}
+
+			throw new WisewalletApplicationException(
+				'Could not continue. Contact an administrator.'
+			);
+		}
+	},
+
+	async updateBankAccount({
+		id,
+		bankAccount
+	}: UpdateBankAccountParams): Promise<BankAccount> {
+		try {
+			const { data } = await httpClient.put<BankAccount>(
+				`/accounts/${id}`,
+				bankAccount,
+				{
+					headers: { Authorization: `Bearer ${getAccessToken()}` }
+				}
+			);
+			return data;
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				const { data } = error.response as { data: ErrorResponse };
+				throw new WisewalletApplicationException(data.message, data.errors);
+			}
+
+			throw new WisewalletApplicationException(
+				'Could not continue. Contact an administrator.'
+			);
+		}
+	},
+
+	async deleteBankAccount({
+		id
+	}: DeleteBankAccountParams): Promise<BankAccount> {
+		try {
+			const { data } = await httpClient.delete<BankAccount>(`/accounts/${id}`, {
+				headers: { Authorization: `Bearer ${getAccessToken()}` }
+			});
+			return data;
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				const { data } = error.response as { data: ErrorResponse };
+				throw new WisewalletApplicationException(data.message, data.errors);
+			}
+
+			throw new WisewalletApplicationException(
+				'Could not continue. Contact an administrator.'
+			);
+		}
+	},
+
+	transactions: {
+		async create({
+			accountTransaction
+		}: CreateAccountTransactionParams): Promise<AccountTransaction> {
+			try {
+				const { data } = await httpClient.post<AccountTransaction>(
+					`/account/transactions`,
+					accountTransaction,
+					{
+						headers: { Authorization: `Bearer ${getAccessToken()}` }
+					}
+				);
+				return data;
+			} catch (error: unknown) {
+				if (axios.isAxiosError(error)) {
+					const { data } = error.response as { data: ErrorResponse };
+					throw new WisewalletApplicationException(data.message, data.errors);
+				}
+
+				throw new WisewalletApplicationException(
+					'Could not continue. Contact an administrator.'
+				);
+			}
+		}
+	}
 };

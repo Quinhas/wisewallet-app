@@ -77,7 +77,6 @@ export function AuthContextProvider({
 					updatedAt: format(parseISO(decodedToken.updatedAt), 'PPPp')
 				};
 			} catch (error) {
-				console.log('AuthContextError: ', error);
 				signOut();
 				throw Error();
 			}

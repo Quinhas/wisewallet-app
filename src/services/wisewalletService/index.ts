@@ -1,5 +1,6 @@
 import { authService } from './authService';
 import { bankAccounts } from './bankAccountsService';
+import { categories } from './categoryService';
 
 interface ErrorProps {
 	message: string;
@@ -11,5 +12,6 @@ export interface ErrorResponse {
 }
 export const wisewallet = {
 	...authService,
-	...bankAccounts
+	...bankAccounts,
+	...categories
 };

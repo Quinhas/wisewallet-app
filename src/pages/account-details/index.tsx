@@ -1,6 +1,8 @@
 import {
+	Button,
 	Flex,
 	Heading,
+	Icon,
 	IconButton,
 	Menu,
 	MenuButton,
@@ -12,7 +14,7 @@ import {
 import AccountTransactionItem from 'components/AccountTransactionItem';
 import { Loading } from 'components/Loading';
 import { useWisewallet } from 'hooks/useWisewallet';
-import { ArrowLeft, DotsThree, Pencil, Plus } from 'phosphor-react';
+import { ArrowLeft, DotsThree, Pencil, Plus, SmileySad } from 'phosphor-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { BankAccount } from 'services/wisewalletService/bankAccountsService';
@@ -26,6 +28,7 @@ export function AccountDetailsPage(): JSX.Element {
 	const navigate = useNavigate();
 
 	const getData = useCallback(async (): Promise<void> => {
+		setBankAccount(undefined);
 		try {
 			if (!id) {
 				throw new Error('ID is required.');
@@ -34,7 +37,6 @@ export function AccountDetailsPage(): JSX.Element {
 			setBankAccount(data);
 		} catch (error) {
 			setBankAccount(null);
-			console.log(error);
 		}
 	}, [getBankAccount, id]);
 
@@ -48,6 +50,10 @@ export function AccountDetailsPage(): JSX.Element {
 				<Menu
 					placement="top-end"
 					isLazy
+					variant="fab"
+					colorScheme="primaryApp"
+					autoSelect={false}
+					strategy="absolute"
 				>
 					<MenuButton
 						as={IconButton}
@@ -70,12 +76,18 @@ export function AccountDetailsPage(): JSX.Element {
 						<MenuList>
 							<MenuItem
 								icon={<Plus />}
-								disabled
+								iconSpacing={0}
+								onClick={() => {
+									navigate('/new-transaction', {
+										state: { bankAccountId: bankAccount.id }
+									});
+								}}
 							>
 								New Transaction
 							</MenuItem>
 							<MenuItem
 								icon={<Pencil />}
+								iconSpacing={0}
 								onClick={() =>
 									navigate('edit', {
 										relative: 'route',
@@ -149,5 +161,37 @@ export function AccountDetailsPage(): JSX.Element {
 		return <Loading />;
 	}
 
-	return <Text>not found.</Text>;
+	return (
+		<Flex
+			align="center"
+			fontSize="1.5rem"
+			m="1rem"
+			p="1rem"
+			direction="column"
+			gap="1rem"
+			textAlign="center"
+			flex={1}
+			justify="center"
+		>
+			<Icon
+				as={SmileySad}
+				color="primaryApp.200"
+				fontSize="13rem"
+			/>
+			<Text
+				fontSize="2xl"
+				fontFamily="heading"
+			>
+				Oops! We couldn&apos;t find your bank account details!
+			</Text>
+			<Button
+				colorScheme="primaryApp"
+				onClick={() => {
+					getData();
+				}}
+			>
+				Try again!
+			</Button>
+		</Flex>
+	);
 }

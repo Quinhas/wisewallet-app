@@ -22,12 +22,15 @@ export default function Navbar(): JSX.Element {
 	return (
 		<>
 			<Flex
+				position="sticky"
+				w="full"
+				top={0}
+				align="center"
+				px="1rem"
 				h="4rem"
+				boxShadow="sm"
 				backgroundColor="primaryApp.300"
 				justify="center"
-				align="center"
-				boxShadow="sm"
-				px="1rem"
 			>
 				<Flex grow={1}>
 					<Heading

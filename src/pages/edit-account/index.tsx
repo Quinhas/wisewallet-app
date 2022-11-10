@@ -28,11 +28,11 @@ export function EditAccountPage(): JSX.Element {
 			<>
 				<Flex
 					alignItems="center"
-					mt="1rem"
+					m="1rem"
+					gap="0.5rem"
 				>
 					<IconButton
 						aria-label="Return to account"
-						mx="1rem"
 						icon={<ArrowLeft />}
 						size="xs"
 						minHeight="2rem"
@@ -48,7 +48,10 @@ export function EditAccountPage(): JSX.Element {
 					align="center"
 					fontSize="1.5rem"
 					mx="1rem"
-					mt="1rem"
+					p="1rem"
+					bg="white"
+					borderRadius="2xl"
+					boxShadow="md"
 				>
 					<AccountForm
 						data={bankAccount}

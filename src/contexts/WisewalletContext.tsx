@@ -11,21 +11,29 @@ import {
 } from 'react';
 import { wisewallet } from 'services/wisewalletService';
 import {
+	AccountTransaction,
 	BankAccount,
+	CreateAccountTransactionParams,
 	DeleteBankAccountParams,
 	GetBankAccountByIDParams,
 	UpdateBankAccountParams
 } from 'services/wisewalletService/bankAccountsService';
-import { errorToast, successToast } from 'utils/toastConfig';
+import { Category } from 'services/wisewalletService/categoryService';
+import { errorToast } from 'utils/toastConfig';
 
 export interface WisewalletContextProps {
-	bankAccounts: BankAccount[];
+	bankAccounts: BankAccount[] | undefined | null;
 	balance: number;
+	getBankAccounts: () => Promise<BankAccount[] | null>;
 	getBankAccount: (
 		data: GetBankAccountByIDParams
 	) => Promise<BankAccount | null>;
 	updateBankAccount: (data: UpdateBankAccountParams) => Promise<void>;
 	deleteBankAccount: (data: DeleteBankAccountParams) => Promise<void>;
+	getCategories: () => Promise<Category[] | null>;
+	createTransaction: (
+		data: CreateAccountTransactionParams
+	) => Promise<AccountTransaction | null>;
 }
 
 interface WisewalletContextProviderProps {
@@ -38,11 +46,18 @@ export const WisewalletContext = createContext({} as WisewalletContextProps);
 export function WisewalletContextProvider({
 	children
 }: WisewalletContextProviderProps): JSX.Element {
-	const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+	const [bankAccounts, setBankAccounts] = useState<
+		BankAccount[] | undefined | null
+	>(undefined);
 	const [balance, setBalance] = useState(0);
 	const toast = useToast();
 
 	useEffect(() => {
+		if (!bankAccounts) {
+			setBalance(0);
+			return;
+		}
+
 		const balance = bankAccounts.reduce(
 			(prevValue, currentValue) => prevValue + Number(currentValue.balance),
 			0
@@ -50,11 +65,16 @@ export function WisewalletContextProvider({
 		setBalance(balance);
 	}, [bankAccounts]);
 
-	const getBankAccounts = useCallback(async () => {
+	const getBankAccounts = useCallback(async (): Promise<
+		BankAccount[] | null
+	> => {
+		setBankAccounts(undefined);
 		try {
 			const data = await wisewallet.getAllBankAccounts();
 			setBankAccounts(data);
+			return data;
 		} catch (error) {
+			// setBankAccounts(null);
 			if (error instanceof WisewalletApplicationException) {
 				if (error.errors?.length !== 0) {
 					error.errors?.forEach((err) => {
@@ -63,7 +83,7 @@ export function WisewalletContextProvider({
 							description: err.message
 						});
 					});
-					return;
+					return null;
 				}
 			}
 
@@ -72,6 +92,8 @@ export function WisewalletContextProvider({
 				description: 'Could not get bank accounts. Try again.'
 			});
 		}
+
+		return null;
 	}, [toast]);
 
 	const getBankAccount = useCallback(
@@ -111,7 +133,7 @@ export function WisewalletContextProvider({
 					bankAccount
 				});
 				setBankAccounts((prevValue) => {
-					const bankAccounts = prevValue.map<BankAccount>((acc) => {
+					const bankAccounts = prevValue!.map<BankAccount>((acc) => {
 						if (acc.id === id) {
 							return {
 								...acc,
@@ -123,10 +145,6 @@ export function WisewalletContextProvider({
 						return acc;
 					});
 					return bankAccounts;
-				});
-				toast({
-					...successToast,
-					description: 'Bank Account updated successfully.'
 				});
 			} catch (error) {
 				if (error instanceof WisewalletApplicationException) {
@@ -157,12 +175,8 @@ export function WisewalletContextProvider({
 					id
 				});
 				setBankAccounts((prevValue) => {
-					const bankAccounts = prevValue.filter((acc) => acc.id !== id);
+					const bankAccounts = prevValue!.filter((acc) => acc.id !== id);
 					return bankAccounts;
-				});
-				toast({
-					...successToast,
-					description: 'Bank Account deleted successfully.'
 				});
 			} catch (error) {
 				if (error instanceof WisewalletApplicationException) {
@@ -186,6 +200,81 @@ export function WisewalletContextProvider({
 		[toast]
 	);
 
+	const createTransaction = useCallback(
+		async ({
+			accountTransaction
+		}: CreateAccountTransactionParams): Promise<AccountTransaction | null> => {
+			try {
+				const data = await wisewallet.transactions.create({
+					accountTransaction
+				});
+				setBankAccounts((prevValue) => {
+					const bankAccounts = prevValue!.map<BankAccount>((acc) => {
+						if (acc.id === accountTransaction.bankAccountId) {
+							return {
+								...acc,
+								balance:
+									accountTransaction.type === 'INCOME'
+										? Number(acc.balance) + Number(accountTransaction.value)
+										: Number(acc.balance) - Number(accountTransaction.value)
+							};
+						}
+
+						return acc;
+					});
+					return bankAccounts;
+				});
+				return data;
+			} catch (error) {
+				if (error instanceof WisewalletApplicationException) {
+					if (error.errors?.length !== 0) {
+						error.errors?.forEach((err) => {
+							toast({
+								...errorToast,
+								description: err.message
+							});
+						});
+						return null;
+					}
+				}
+
+				toast({
+					...errorToast,
+					description: 'Could not create transaction. Try again.'
+				});
+			}
+
+			return null;
+		},
+		[toast]
+	);
+
+	const getCategories = useCallback(async (): Promise<Category[] | null> => {
+		try {
+			const data = await wisewallet.getAllCategories();
+			return data;
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				if (error.errors?.length !== 0) {
+					error.errors?.forEach((err) => {
+						toast({
+							...errorToast,
+							description: err.message
+						});
+					});
+					return null;
+				}
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not get categories. Try again.'
+			});
+		}
+
+		return null;
+	}, [toast]);
+
 	useEffect(() => {
 		getBankAccounts();
 	}, [getBankAccounts]);
@@ -194,16 +283,22 @@ export function WisewalletContextProvider({
 		() => ({
 			bankAccounts,
 			balance,
+			getBankAccounts,
 			getBankAccount,
 			updateBankAccount,
-			deleteBankAccount
+			deleteBankAccount,
+			getCategories,
+			createTransaction
 		}),
 		[
 			bankAccounts,
 			balance,
+			getBankAccounts,
 			getBankAccount,
 			updateBankAccount,
-			deleteBankAccount
+			deleteBankAccount,
+			getCategories,
+			createTransaction
 		]
 	);
 

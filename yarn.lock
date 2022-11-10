@@ -276,7 +276,7 @@
     "@chakra-ui/react-context" "2.0.4"
     "@chakra-ui/spinner" "2.0.10"
 
-"@chakra-ui/anatomy@2.0.7":
+"@chakra-ui/anatomy@2.0.7", "@chakra-ui/anatomy@^2.0.7":
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/@chakra-ui/anatomy/-/anatomy-2.0.7.tgz#33e60c7c4d6e5f949f6f8308249dc571f84ead1e"
   integrity sha512-vzcB2gcsGCxhrKbldQQV6LnBPys4eSSsH2UA2mLsT+J3WlXw0aodZw0eE/nH7yLxe4zaQ4Gnc0KjkFW4EWNKSg==

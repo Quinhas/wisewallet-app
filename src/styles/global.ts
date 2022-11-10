@@ -8,6 +8,7 @@ import { Button } from './styledComponents/Button';
 import { Checkbox } from './styledComponents/Checkbox';
 import { Input } from './styledComponents/Input';
 import { Link } from './styledComponents/Link';
+import { Menu } from './styledComponents/Menu';
 import { MenuItem } from './styledComponents/MenuItem';
 import { StatementListItem } from './styledComponents/StatementListItem';
 
@@ -19,7 +20,8 @@ const theme = extendTheme({
 		Checkbox,
 		AccountCard,
 		StatementListItem,
-		Link
+		Link,
+		Menu
 	},
 	styles: {
 		global: (props: GlobalStyleProps) => ({
