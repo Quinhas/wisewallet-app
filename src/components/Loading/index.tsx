@@ -1,4 +1,4 @@
-import { Flex, Spinner, Text } from '@chakra-ui/react';
+import { Flex, Spinner, Text, useColorModeValue } from '@chakra-ui/react';
 
 export function Loading(): JSX.Element {
 	return (
@@ -12,7 +12,7 @@ export function Loading(): JSX.Element {
 				direction="column"
 				align="center"
 				gridGap="1.5rem"
-				bg="white"
+				bg={useColorModeValue('white', 'black')}
 				boxShadow="md"
 				py="2rem"
 				px="4rem"

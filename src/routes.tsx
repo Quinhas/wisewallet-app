@@ -6,6 +6,7 @@ import { useAuth } from 'hooks/useAuth';
 import { AccountDetailsPage } from 'pages/account-details';
 import App from 'pages/App';
 import { EditAccountPage } from 'pages/edit-account';
+import { NewAccountPage } from 'pages/new-account';
 import { NewTransactionPage } from 'pages/new-transaction';
 import { ProfilePage } from 'pages/profile';
 import { SignInPage } from 'pages/signin';
@@ -83,6 +84,14 @@ export function CustomRoutes(): JSX.Element {
 				element={
 					<ProtectedRoute>
 						<NewTransactionPage />
+					</ProtectedRoute>
+				}
+			/>
+			<Route
+				path="/account/new"
+				element={
+					<ProtectedRoute>
+						<NewAccountPage />
 					</ProtectedRoute>
 				}
 			/>

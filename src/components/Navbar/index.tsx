@@ -34,7 +34,7 @@ export default function Navbar(): JSX.Element {
 			>
 				<Flex grow={1}>
 					<Heading
-						color={useColorModeValue('gray.50', 'gray.900')}
+						color="gray.50"
 						fontSize="2rem"
 					>
 						Wisewallet
@@ -48,9 +48,9 @@ export default function Navbar(): JSX.Element {
 						onClick={onOpen}
 						variant="outline"
 						borderRadius="md"
-						textColor={useColorModeValue('gray.50', 'gray.900')}
-						borderColor={useColorModeValue('gray.50', 'gray.900')}
-						colorScheme={useColorModeValue('whiteAlpha', 'blackAlpha')}
+						textColor="gray.50"
+						borderColor="gray.50"
+						colorScheme="whiteAlpha"
 					/>
 				</Flex>
 			</Flex>
@@ -60,7 +60,12 @@ export default function Navbar(): JSX.Element {
 				onClose={onClose}
 			>
 				<DrawerOverlay />
-				<DrawerContent bg={useColorModeValue('white', 'black')}>
+				<DrawerContent
+					bg={useColorModeValue('white', 'black')}
+					borderLeft="0.5px"
+					borderStyle="solid"
+					borderColor={useColorModeValue('gray.50', 'gray.900')}
+				>
 					<DrawerCloseButton />
 					<DrawerHeader>Menu</DrawerHeader>
 

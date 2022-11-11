@@ -3,11 +3,9 @@ import { mode } from '@chakra-ui/theme-tools';
 
 export const Button = defineStyleConfig({
 	baseStyle: {
+		boxShadow: 'sm',
 		borderRadius: '0.5rem',
-		padding: '0.25rem',
-		minH: '3rem',
-		height: '3rem',
-		boxShadow: 'sm'
+		padding: '0.25rem'
 	},
 	variants: {
 		solid(props) {
@@ -83,6 +81,25 @@ export const Button = defineStyleConfig({
 				borderColor,
 				textColor
 			};
+		}
+	},
+	sizes: {
+		xs: {
+			minH: 'var(--chakra-sizes-8)',
+			minW: 'var(--chakra-sizes-8)'
+		},
+		sm: {
+			minH: 'var(--chakra-sizes-10)',
+			minW: 'var(--chakra-sizes-10)'
+		},
+		md: {
+			minH: 'var(--chakra-sizes-12)',
+			minW: 'var(--chakra-sizes-12)'
+		},
+		lg: {
+			h: 'var(--chakra-sizes-16)',
+			minH: 'var(--chakra-sizes-16)',
+			minW: 'var(--chakra-sizes-14)'
 		}
 	}
 });

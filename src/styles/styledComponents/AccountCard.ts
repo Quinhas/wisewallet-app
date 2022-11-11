@@ -55,5 +55,33 @@ export const AccountCard = defineStyleConfig({
 				color: 'white'
 			}
 		};
+	},
+	variants: {
+		new: {
+			background: 'transparent',
+			borderWidth: '2px',
+			borderStyle: 'dashed',
+			borderColor: 'primaryApp.300',
+			alignItems: 'center',
+			justifyContent: 'center',
+			'.link': {
+				display: 'flex',
+				flexDirection: 'row',
+				alignItems: 'center',
+				justifyContent: 'center',
+				gap: '0.5rem',
+				fontSize: '1.5rem',
+				p: {
+					fontSize: '1rem',
+					maxW: 'calc(100% - 1rem)',
+					overflow: 'hidden',
+					whiteSpace: 'nowrap',
+					textOverflow: 'ellipsis'
+				}
+			},
+			_hover: {
+				background: 'primaryApp.50'
+			}
+		}
 	}
 });

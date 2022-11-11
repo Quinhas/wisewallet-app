@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Flex, Heading, IconButton } from '@chakra-ui/react';
+import { Flex, Heading, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { TransactionForm } from 'components/TransactionForm';
 import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft } from 'phosphor-react';
@@ -53,7 +53,7 @@ export function NewTransactionPage(): JSX.Element {
 				fontSize="1.5rem"
 				mx="1rem"
 				p="1rem"
-				bg="white"
+				bg={useColorModeValue('white', 'black')}
 				borderRadius="2xl"
 				boxShadow="md"
 			>

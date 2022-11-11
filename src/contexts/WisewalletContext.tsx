@@ -14,6 +14,7 @@ import {
 	AccountTransaction,
 	BankAccount,
 	CreateAccountTransactionParams,
+	CreateBankAccountParams,
 	DeleteBankAccountParams,
 	GetBankAccountByIDParams,
 	UpdateBankAccountParams
@@ -27,6 +28,9 @@ export interface WisewalletContextProps {
 	getBankAccounts: () => Promise<BankAccount[] | null>;
 	getBankAccount: (
 		data: GetBankAccountByIDParams
+	) => Promise<BankAccount | null>;
+	createBankAccount: (
+		data: CreateBankAccountParams
 	) => Promise<BankAccount | null>;
 	updateBankAccount: (data: UpdateBankAccountParams) => Promise<void>;
 	deleteBankAccount: (data: DeleteBankAccountParams) => Promise<void>;
@@ -120,6 +124,44 @@ export function WisewalletContextProvider({
 				});
 			}
 
+			return null;
+		},
+		[toast]
+	);
+
+	const createBankAccount = useCallback(
+		async ({
+			bankAccount
+		}: CreateBankAccountParams): Promise<BankAccount | null> => {
+			try {
+				const data = await wisewallet.createBankAccount({
+					bankAccount
+				});
+				setBankAccounts((prevValue) => {
+					if (prevValue) {
+						return [...prevValue, data];
+					}
+
+					return prevValue;
+				});
+			} catch (error) {
+				if (error instanceof WisewalletApplicationException) {
+					if (error.errors?.length !== 0) {
+						error.errors?.forEach((err) => {
+							toast({
+								...errorToast,
+								description: err.message
+							});
+						});
+						return null;
+					}
+				}
+
+				toast({
+					...errorToast,
+					description: 'Could not continue. Try again.'
+				});
+			}
 			return null;
 		},
 		[toast]
@@ -285,6 +327,7 @@ export function WisewalletContextProvider({
 			balance,
 			getBankAccounts,
 			getBankAccount,
+			createBankAccount,
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,
@@ -295,6 +338,7 @@ export function WisewalletContextProvider({
 			balance,
 			getBankAccounts,
 			getBankAccount,
+			createBankAccount,
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,

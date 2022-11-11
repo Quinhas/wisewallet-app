@@ -48,6 +48,10 @@ export interface GetBankAccountByIDParams {
 	id: string;
 }
 
+export interface CreateBankAccountParams {
+	bankAccount: BankAccountDTO;
+}
+
 export interface CreateAccountTransactionParams {
 	accountTransaction: AccountTransactionDTO;
 }
@@ -87,6 +91,30 @@ export const bankAccounts = {
 			const { data } = await httpClient.get<BankAccount>(`/accounts/${id}`, {
 				headers: { Authorization: `Bearer ${getAccessToken()}` }
 			});
+			return data;
+		} catch (error: unknown) {
+			if (axios.isAxiosError(error)) {
+				const { data } = error.response as { data: ErrorResponse };
+				throw new WisewalletApplicationException(data.message, data.errors);
+			}
+
+			throw new WisewalletApplicationException(
+				'Could not continue. Contact an administrator.'
+			);
+		}
+	},
+
+	async createBankAccount({
+		bankAccount
+	}: CreateBankAccountParams): Promise<BankAccount> {
+		try {
+			const { data } = await httpClient.post<BankAccount>(
+				`/accounts/`,
+				bankAccount,
+				{
+					headers: { Authorization: `Bearer ${getAccessToken()}` }
+				}
+			);
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {

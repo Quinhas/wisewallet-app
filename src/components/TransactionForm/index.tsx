@@ -92,7 +92,7 @@ export function TransactionForm({
 		>
 			{bankAccounts === null && <h1>erro.</h1>}
 			{bankAccounts && bankAccounts.length === 0 && <h1>não tem contas.</h1>}
-			{bankAccounts && (
+			{bankAccounts && bankAccounts.length !== 0 && (
 				<FormControl
 					isInvalid={!!errors.bankAccountId}
 					isRequired
@@ -191,7 +191,6 @@ export function TransactionForm({
 			</FormControl>
 
 			{categories === null && <h1>erro.</h1>}
-			{categories && categories.length === 0 && <h1>não tem categories.</h1>}
 			{categories && (
 				<FormControl isInvalid={!!errors.categoryId}>
 					<FormLabel htmlFor="balance">Category</FormLabel>
