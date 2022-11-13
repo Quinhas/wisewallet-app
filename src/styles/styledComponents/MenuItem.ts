@@ -1,7 +1,7 @@
 import { defineStyleConfig } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
-export const MenuItem = defineStyleConfig({
+export const CustomMenuItem = defineStyleConfig({
 	baseStyle: (props) => ({
 		display: 'flex',
 		alignItems: 'center',

@@ -1,6 +1,6 @@
 import { defineStyleConfig } from '@chakra-ui/react';
 
-export const Input = defineStyleConfig({
+export const Select = defineStyleConfig({
 	baseStyle: {
 		field: {
 			minH: '3rem',

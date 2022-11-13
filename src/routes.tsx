@@ -80,7 +80,7 @@ export function CustomRoutes(): JSX.Element {
 				}
 			/>
 			<Route
-				path="/new-transaction"
+				path="/transaction/new"
 				element={
 					<ProtectedRoute>
 						<NewTransactionPage />
@@ -95,6 +95,14 @@ export function CustomRoutes(): JSX.Element {
 					</ProtectedRoute>
 				}
 			/>
+			{/* <Route
+				path="/transfer/new"
+				element={
+					<ProtectedRoute>
+						<NewTransferPage />
+					</ProtectedRoute>
+				}
+			/> */}
 		</Routes>
 	);
 }

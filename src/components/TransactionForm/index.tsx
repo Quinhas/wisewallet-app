@@ -26,7 +26,7 @@ import {
 } from 'utils/formValidationMessages';
 import * as yup from 'yup';
 
-interface AccountFormProps {
+interface TransactionFormProps {
 	data?: Partial<AccountTransaction>;
 	onFormSubmit: (data: AccountTransactionDTO) => void;
 }
@@ -47,7 +47,7 @@ const ValidationSchema = yup.object().shape({
 export function TransactionForm({
 	data,
 	onFormSubmit
-}: AccountFormProps): JSX.Element {
+}: TransactionFormProps): JSX.Element {
 	const [categories, setCategories] = useState<Category[] | null>([]);
 	const { bankAccounts, getCategories } = useWisewallet();
 	const {

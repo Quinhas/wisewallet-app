@@ -8,9 +8,17 @@ const pages = [
 		href: '/'
 	},
 	{
-		name: 'Teste',
-		href: '/teste'
+		name: 'New Account',
+		href: '/account/new'
+	},
+	{
+		name: 'New Transaction',
+		href: '/transaction/new'
 	}
+	// ,{
+	// 	name: 'New Transfer',
+	// 	href: '/transfer/new'
+	// }
 ];
 
 export default function Menu(): JSX.Element {

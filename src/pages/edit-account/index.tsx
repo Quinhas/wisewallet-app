@@ -38,14 +38,14 @@ export function EditAccountPage(): JSX.Element {
 			id: bankAccount.id,
 			bankAccount: data
 		});
-		navigate(-1);
+		navigate('../', { relative: 'path' });
 	}
 
 	function handleDelete(): void {
 		deleteBankAccount({
 			id: bankAccount.id
 		});
-		navigate(-2);
+		navigate('/', { relative: 'path' });
 	}
 
 	if (bankAccount) {
@@ -64,7 +64,7 @@ export function EditAccountPage(): JSX.Element {
 						minW="2rem"
 						colorScheme="primaryApp"
 						variant="outline"
-						onClick={() => navigate(-1)}
+						onClick={() => navigate('../', { relative: 'path' })}
 					/>
 					<Heading fontWeight={600}>Edit {bankAccount.name}</Heading>
 				</Flex>

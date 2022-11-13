@@ -9,3 +9,5 @@ export const maxLengthMessage = (field: string, max: number): string =>
 	`The ${field} must have ${max} characters or fewer.`;
 export const minLengthMessage = (field: string, min: number): string =>
 	`The ${field} must have at least ${min} characters.`;
+export const sameAccountTransferMessage =
+	'The source account and the destination account cannot be the same.';

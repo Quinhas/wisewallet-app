@@ -1,5 +1,5 @@
-import { Link, useStyleConfig } from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Button, useStyleConfig } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 interface MenuItemProps {
 	name: string;
@@ -12,17 +12,17 @@ export default function MenuItem({
 	name,
 	href
 }: MenuItemProps): JSX.Element {
-	const styles = useStyleConfig('MenuItem', {
+	const styles = useStyleConfig('CustomMenuItem', {
 		variant
 	});
 
 	return (
-		<Link
-			as={RouterLink}
+		<Button
+			as={Link}
 			to={href}
 			__css={styles}
 		>
 			{name}
-		</Link>
+		</Button>
 	);
 }

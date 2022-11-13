@@ -78,7 +78,7 @@ export function AccountDetailsPage(): JSX.Element {
 								icon={<Plus />}
 								iconSpacing={0}
 								onClick={() => {
-									navigate('/new-transaction', {
+									navigate('/transaction/new', {
 										state: { bankAccountId: bankAccount.id }
 									});
 								}}

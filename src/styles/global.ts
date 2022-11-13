@@ -9,19 +9,23 @@ import { Checkbox } from './styledComponents/Checkbox';
 import { Input } from './styledComponents/Input';
 import { Link } from './styledComponents/Link';
 import { Menu } from './styledComponents/Menu';
-import { MenuItem } from './styledComponents/MenuItem';
+import { CustomMenuItem } from './styledComponents/MenuItem';
+import { Select } from './styledComponents/Select';
 import { StatementListItem } from './styledComponents/StatementListItem';
+import { Textarea } from './styledComponents/Textarea';
 
 const theme = extendTheme({
 	components: {
 		Button,
 		Input,
-		MenuItem,
+		CustomMenuItem,
 		Checkbox,
 		AccountCard,
 		StatementListItem,
 		Link,
-		Menu
+		Menu,
+		Select,
+		Textarea
 	},
 	styles: {
 		global: (props: GlobalStyleProps) => ({

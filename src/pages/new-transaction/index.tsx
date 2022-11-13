@@ -10,7 +10,11 @@ export function NewTransactionPage(): JSX.Element {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { createTransaction } = useWisewallet();
-	const { bankAccountId } = location.state as { bankAccountId: string };
+	const { state } = location as {
+		state: {
+			bankAccountId: string | undefined;
+		} | null;
+	};
 
 	async function onSubmit(data: AccountTransactionDTO): Promise<void> {
 		await createTransaction({
@@ -25,7 +29,7 @@ export function NewTransactionPage(): JSX.Element {
 				isRecurrent: data.isRecurrent
 			}
 		});
-		navigate(-1);
+		navigate(state?.bankAccountId ? `/account/${state.bankAccountId}` : '/');
 	}
 
 	return (
@@ -43,7 +47,11 @@ export function NewTransactionPage(): JSX.Element {
 					minW="2rem"
 					colorScheme="primaryApp"
 					variant="outline"
-					onClick={() => navigate(-1)}
+					onClick={() =>
+						navigate(
+							state?.bankAccountId ? `/account/${state.bankAccountId}` : '/'
+						)
+					}
 				/>
 				<Heading fontWeight={600}>New Transaction</Heading>
 			</Flex>
@@ -51,6 +59,7 @@ export function NewTransactionPage(): JSX.Element {
 				justify="space-between"
 				align="center"
 				fontSize="1.5rem"
+				mb="0.5rem"
 				mx="1rem"
 				p="1rem"
 				bg={useColorModeValue('white', 'black')}
@@ -58,7 +67,7 @@ export function NewTransactionPage(): JSX.Element {
 				boxShadow="md"
 			>
 				<TransactionForm
-					data={{ bankAccountId }}
+					data={{ bankAccountId: state?.bankAccountId }}
 					onFormSubmit={onSubmit}
 				/>
 			</Flex>
