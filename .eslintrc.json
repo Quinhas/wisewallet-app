@@ -37,7 +37,7 @@
 		"react/prop-types": "off",
 		"react/require-default-props": "off",
 		"react/jsx-props-no-spreading": "off",
-		"@typescript-eslint/no-misused-promises": "warn",
+		"@typescript-eslint/no-misused-promises": "off",
 		"comma-dangle": "off",
 		"prettier/prettier": "error",
 		"@typescript-eslint/no-floating-promises": "off",

@@ -19,7 +19,10 @@ import {
 	GetBankAccountByIDParams,
 	UpdateBankAccountParams
 } from 'services/wisewalletService/bankAccountsService';
-import { Category } from 'services/wisewalletService/categoryService';
+import {
+	Category,
+	CreateCategoryParams
+} from 'services/wisewalletService/categoryService';
 import { errorToast } from 'utils/toastConfig';
 
 export interface WisewalletContextProps {
@@ -38,6 +41,7 @@ export interface WisewalletContextProps {
 	createTransaction: (
 		data: CreateAccountTransactionParams
 	) => Promise<AccountTransaction | null>;
+	createCategory: (data: CreateCategoryParams) => Promise<Category | null>;
 }
 
 interface WisewalletContextProviderProps {
@@ -78,7 +82,7 @@ export function WisewalletContextProvider({
 			setBankAccounts(data);
 			return data;
 		} catch (error) {
-			// setBankAccounts(null);
+			setBankAccounts(null);
 			if (error instanceof WisewalletApplicationException) {
 				if (error.errors?.length !== 0) {
 					error.errors?.forEach((err) => {
@@ -317,6 +321,18 @@ export function WisewalletContextProvider({
 		return null;
 	}, [toast]);
 
+	const createCategory = useCallback(
+		async ({ category }: CreateCategoryParams): Promise<Category | null> => {
+			try {
+				const data = await wisewallet.createCategory({ category });
+				return data;
+			} catch (error) {
+				return null;
+			}
+		},
+		[]
+	);
+
 	useEffect(() => {
 		getBankAccounts();
 	}, [getBankAccounts]);
@@ -331,7 +347,8 @@ export function WisewalletContextProvider({
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,
-			createTransaction
+			createTransaction,
+			createCategory
 		}),
 		[
 			bankAccounts,
@@ -342,7 +359,8 @@ export function WisewalletContextProvider({
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,
-			createTransaction
+			createTransaction,
+			createCategory
 		]
 	);
 

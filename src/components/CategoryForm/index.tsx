@@ -10,46 +10,44 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FloppyDisk } from 'phosphor-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
-	BankAccount,
-	BankAccountDTO
-} from 'services/wisewalletService/bankAccountsService';
+	Category,
+	CategoryDTO
+} from 'services/wisewalletService/categoryService';
 import {
 	maxLengthMessage,
 	requiredFieldMessage
 } from 'utils/formValidationMessages';
 import * as yup from 'yup';
 
-interface AccountFormProps {
-	data?: BankAccount;
-	onFormSubmit: (data: BankAccountDTO) => void;
+interface CategoryFormProps {
+	data?: Partial<Category>;
+	onFormSubmit: (data: CategoryDTO) => void;
 }
 
 const ValidationSchema = yup.object().shape({
-	name: yup
+	description: yup
 		.string()
-		.max(25, maxLengthMessage('name', 25))
-		.required(requiredFieldMessage),
-	balance: yup.number().required(requiredFieldMessage)
+		.required(requiredFieldMessage)
+		.max(20, maxLengthMessage('description', 20))
 });
 
-export function AccountForm({
+export function CategoryForm({
 	data,
 	onFormSubmit
-}: AccountFormProps): JSX.Element {
+}: CategoryFormProps): JSX.Element {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting, isValid, isDirty }
-	} = useForm<BankAccountDTO>({
+	} = useForm<CategoryDTO>({
 		resolver: yupResolver(ValidationSchema),
 		mode: 'onChange',
 		defaultValues: {
-			name: data?.name ?? '',
-			balance: data?.balance ?? 0
+			description: data?.description ?? ''
 		}
 	});
 
-	const onSubmit: SubmitHandler<BankAccountDTO> = (values, e): void => {
+	const onSubmit: SubmitHandler<CategoryDTO> = (values, e): void => {
 		e?.preventDefault();
 		onFormSubmit(values);
 	};
@@ -62,33 +60,22 @@ export function AccountForm({
 			w="100%"
 			onSubmit={handleSubmit(onSubmit)}
 		>
-			<FormControl isInvalid={!!errors.name}>
-				<FormLabel htmlFor="name">Name</FormLabel>
-				<Input
-					placeholder="Name"
-					type="text"
-					{...register('name')}
-				/>
-				{errors.name && (
-					<FormErrorMessage>{errors.name.message}</FormErrorMessage>
-				)}
-			</FormControl>
 			<FormControl
-				isInvalid={!!errors.balance}
+				isInvalid={!!errors.description}
 				isRequired
 			>
-				<FormLabel htmlFor="balance">Balance</FormLabel>
+				<FormLabel htmlFor="description">Description</FormLabel>
 				<Input
-					placeholder="Balance"
-					autoComplete="off"
-					step={0.01}
-					type="number"
-					{...register('balance')}
+					placeholder="Description"
+					type="text"
+					{...register('description')}
+					maxLength={20}
 				/>
-				{errors.balance && (
-					<FormErrorMessage>{errors.balance.message}</FormErrorMessage>
+				{errors.description && (
+					<FormErrorMessage>{errors.description.message}</FormErrorMessage>
 				)}
 			</FormControl>
+
 			<Button
 				colorScheme="primaryApp"
 				isLoading={isSubmitting}

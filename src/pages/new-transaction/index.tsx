@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Flex, Heading, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { TransactionForm } from 'components/TransactionForm';
 import { useWisewallet } from 'hooks/useWisewallet';
