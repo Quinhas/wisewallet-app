@@ -8,11 +8,9 @@
 		"preview": "vite preview",
 		"prepare": "husky install",
 		"commit": "git-cz",
-		"gen:theme-typings": "chakra-cli tokens ./src/styles/global.ts",
-		"postinstall": "npm run gen:theme-typings",
 		"prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
 		"lint": "eslint \"src/**/*.{ts,tsx}\"",
-		"format": "yarn lint --fix && yarn prettier"
+		"format": "yarn prettier && yarn lint --fix"
 	},
 	"dependencies": {
 		"@chakra-ui/anatomy": "^2.0.7",
@@ -24,6 +22,7 @@
 		"@fontsource/montserrat": "^4.5.13",
 		"@fontsource/poppins": "^4.5.10",
 		"@hookform/resolvers": "^2.9.10",
+		"@types/react-input-mask": "^3.0.2",
 		"axios": "^1.1.3",
 		"chroma-js": "^2.4.2",
 		"date-fns": "^2.29.3",
@@ -31,8 +30,10 @@
 		"jwt-decode": "^3.1.2",
 		"phosphor-react": "^1.4.1",
 		"react": "^18.2.0",
+		"react-currency-format": "^1.1.0",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.38.0",
+		"react-intl-currency-input": "^0.2.6",
 		"react-router-dom": "^6.4.2",
 		"yup": "^0.32.11"
 	},
@@ -42,6 +43,7 @@
 		"@commitlint/config-conventional": "^17.1.0",
 		"@types/chroma-js": "^2.1.4",
 		"@types/react": "^18.0.22",
+		"@types/react-currency-format": "^1.0.0",
 		"@types/react-dom": "^18.0.7",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@vitejs/plugin-react": "^2.2.0",

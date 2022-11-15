@@ -3,9 +3,12 @@ import {
 	Flex,
 	FormControl,
 	FormErrorMessage,
+	FormHelperText,
 	FormLabel,
 	IconButton,
 	Input,
+	InputGroup,
+	InputLeftAddon,
 	Select,
 	Text,
 	Textarea,
@@ -24,9 +27,11 @@ import {
 } from 'services/wisewalletService/bankAccountsService';
 import { Category } from 'services/wisewalletService/categoryService';
 import {
+	insufficientBalanceMessage,
 	invalidDateMessage,
 	maxLengthMessage,
-	requiredFieldMessage
+	requiredFieldMessage,
+	valueGreaterThanZeroMessage
 } from 'utils/formValidationMessages';
 import * as yup from 'yup';
 
@@ -35,28 +40,68 @@ interface TransactionFormProps {
 	onFormSubmit: (data: AccountTransactionDTO) => void;
 }
 
-const ValidationSchema = yup.object().shape({
-	bankAccountId: yup.string().required(requiredFieldMessage),
-	type: yup.string().required(requiredFieldMessage),
-	title: yup
-		.string()
-		.required(requiredFieldMessage)
-		.max(60, maxLengthMessage('title', 60)),
-	description: yup.string().max(150, maxLengthMessage('description', 150)),
-	value: yup.number().required(requiredFieldMessage),
-	date: yup.date().required(requiredFieldMessage).typeError(invalidDateMessage),
-	categoryId: yup.number()
-});
-
 export function TransactionForm({
 	data,
 	onFormSubmit
 }: TransactionFormProps): JSX.Element {
 	const [categories, setCategories] = useState<Category[] | null>([]);
+	const [selectedBankAccount, setSelectedBankAccount] = useState<string>();
+	const [showAvailableBalance, setShowAvailableBalance] = useState(false);
+	const [transactionValue, setTransactionValue] = useState<string>('0');
 	const { bankAccounts, getCategories, getBankAccounts } = useWisewallet();
+
+	const getMaxBalance = useCallback<
+		() => { value: number; formattedValue: string }
+	>(() => {
+		if (!bankAccounts || !selectedBankAccount) {
+			return {
+				value: 0,
+				formattedValue: Number(0).toLocaleString('pt-BR', {
+					currency: 'BRL',
+					style: 'currency'
+				})
+			};
+		}
+		const maxBalance =
+			bankAccounts.find((acc) => acc.id === selectedBankAccount)?.balance ?? 0;
+		return {
+			value: Number(maxBalance),
+			formattedValue: Number(maxBalance).toLocaleString('pt-BR', {
+				currency: 'BRL',
+				style: 'currency'
+			})
+		};
+	}, [bankAccounts, selectedBankAccount]);
+
+	const ValidationSchema = yup.object().shape({
+		bankAccountId: yup.string().required(requiredFieldMessage),
+		type: yup.string().required(requiredFieldMessage),
+		title: yup
+			.string()
+			.required(requiredFieldMessage)
+			.max(60, maxLengthMessage('title', 60)),
+		description: yup.string().max(150, maxLengthMessage('description', 150)),
+		value: yup
+			.number()
+			.required(requiredFieldMessage)
+			.typeError(requiredFieldMessage)
+			.when('type', {
+				is: 'EXPENSE',
+				then: (schema) =>
+					schema.max(getMaxBalance().value, insufficientBalanceMessage)
+			})
+			.min(0.01, valueGreaterThanZeroMessage),
+		date: yup
+			.date()
+			.required(requiredFieldMessage)
+			.typeError(invalidDateMessage),
+		categoryId: yup.number()
+	});
+
 	const {
 		register,
 		handleSubmit,
+		getValues,
 		setValue,
 		formState: { errors, isSubmitting, isValid, isDirty }
 	} = useForm<AccountTransactionDTO>({
@@ -149,7 +194,11 @@ export function TransactionForm({
 						<Flex gap="0.5rem">
 							<Select
 								defaultValue={data?.bankAccountId ?? -1}
-								{...register('bankAccountId')}
+								{...register('bankAccountId', {
+									onChange: () => {
+										setSelectedBankAccount(getValues('bankAccountId'));
+									}
+								})}
 							>
 								<option
 									value={-1}
@@ -174,9 +223,7 @@ export function TransactionForm({
 								onClick={onOpenAccountModal}
 								colorScheme="primaryApp"
 								icon={<Plus />}
-							>
-								Create
-							</IconButton>
+							/>
 						</Flex>
 					)}
 					{errors.bankAccountId && (
@@ -190,7 +237,10 @@ export function TransactionForm({
 				>
 					<FormLabel htmlFor="type">Type</FormLabel>
 					<Select
-						{...register('type')}
+						{...register('type', {
+							onChange: () =>
+								setShowAvailableBalance(getValues('type') === 'EXPENSE')
+						})}
 						defaultValue={-1}
 					>
 						<option
@@ -229,11 +279,70 @@ export function TransactionForm({
 					isRequired
 				>
 					<FormLabel htmlFor="value">Value</FormLabel>
+					<InputGroup>
+						<InputLeftAddon
+							height="auto"
+							background="primaryApp.50"
+							borderRight={0}
+						>
+							<Text
+								fontFamily="heading"
+								fontSize="1.25rem"
+								fontWeight={300}
+							>
+								R$
+							</Text>
+						</InputLeftAddon>
+						<Input
+							placeholder="Value"
+							min={0.01}
+							type="text"
+							inputMode="decimal"
+							value={transactionValue}
+							onChange={(e) => {
+								const { value } = e.target;
+								const parts = value.split(',');
+								let [formattedValue] = parts;
+								formattedValue = formattedValue
+									.replace(/^0+/g, '')
+									.replace(/[^0-9,.]/g, '')
+									.replace(/\./g, '')
+									.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.');
+								formattedValue =
+									parts[1] || parts[1] === ''
+										? formattedValue.concat(
+											',',
+											parts[1].replace(/[^0-9]/g, '')
+										)
+										: formattedValue;
+								const fixedValue = formattedValue.match(
+									/^[0-9.]+(?:,[0-9.]{0,2})?/
+								);
+								formattedValue = fixedValue?.[0] ?? '0';
+								const numberValue = Number(
+									formattedValue.replace(/\./g, '').replace(',', '.')
+								);
+								setValue('value', Number.isNaN(numberValue) ? 0 : numberValue, {
+									shouldValidate: true
+								});
+
+								setTransactionValue(formattedValue);
+							}}
+						/>
+					</InputGroup>
 					<Input
+						display="none"
 						placeholder="Value"
+						min={0.01}
 						type="number"
 						{...register('value')}
 					/>
+					{showAvailableBalance && (
+						<FormHelperText>
+							Available: {getMaxBalance().formattedValue}
+						</FormHelperText>
+					)}
+
 					{errors.value && (
 						<FormErrorMessage>{errors.value.message}</FormErrorMessage>
 					)}
@@ -244,7 +353,7 @@ export function TransactionForm({
 					<Input
 						placeholder="Date"
 						type="date"
-						{...register('date')}
+						{...register('date', { valueAsDate: true })}
 					/>
 					{errors.date && (
 						<FormErrorMessage>{errors.date.message}</FormErrorMessage>
@@ -297,9 +406,7 @@ export function TransactionForm({
 								onClick={onOpenCategoryModal}
 								colorScheme="primaryApp"
 								icon={<Plus />}
-							>
-								Create
-							</IconButton>
+							/>
 						</Flex>
 					)}
 					{errors.categoryId && (

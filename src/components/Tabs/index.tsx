@@ -40,6 +40,7 @@ export default function Tabs(): JSX.Element {
 			boxShadow="0 -1px 2px 0 rgba(0, 0, 0, 0.05)"
 			backgroundColor={useColorModeValue('white', 'black')}
 			justify="space-between"
+			zIndex="sticky"
 		>
 			{tabs.map((tab) => (
 				<Link

@@ -31,6 +31,7 @@ export default function Navbar(): JSX.Element {
 				boxShadow="sm"
 				backgroundColor="primaryApp.300"
 				justify="center"
+				zIndex="sticky"
 			>
 				<Flex grow={1}>
 					<Heading
