@@ -1,5 +1,6 @@
 import { Flex, Heading, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { TransactionForm } from 'components/TransactionForm';
+import { parseISO } from 'date-fns';
 import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft } from 'phosphor-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,11 +20,11 @@ export function NewTransactionPage(): JSX.Element {
 		await createTransaction({
 			accountTransaction: {
 				bankAccountId: data.bankAccountId,
-				date: data.date,
+				date: parseISO(String(data.date)),
 				title: data.title,
 				type: data.type,
 				value: Number(data.value),
-				categoryId: data.categoryId ? Number(data.categoryId) : undefined,
+				categoryId: data.categoryId && Number(data.categoryId) !== -1 ? Number(data.categoryId) : undefined,
 				description: data.description,
 				isRecurrent: data.isRecurrent
 			}

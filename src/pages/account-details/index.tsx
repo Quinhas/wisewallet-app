@@ -11,7 +11,7 @@ import {
 	Portal,
 	Text
 } from '@chakra-ui/react';
-import AccountTransactionItem from 'components/AccountTransactionItem';
+import { AccountTransactionList } from 'components/AccountTransactionList';
 import { Loading } from 'components/Loading';
 import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft, DotsThree, Pencil, Plus, SmileySad } from 'phosphor-react';
@@ -40,6 +40,8 @@ export function AccountDetailsPage(): JSX.Element {
 		}
 	}, [getBankAccount, id]);
 
+
+
 	useEffect(() => {
 		getData();
 	}, [getData]);
@@ -53,13 +55,13 @@ export function AccountDetailsPage(): JSX.Element {
 					variant="fab"
 					colorScheme="primaryApp"
 					autoSelect={false}
-					strategy="absolute"
+					strategy="fixed"
 				>
 					<MenuButton
 						as={IconButton}
 						aria-label="Options"
 						icon={<DotsThree fontSize="2rem" />}
-						position="absolute"
+						position="fixed"
 						right="2rem"
 						bottom="5rem"
 						borderRadius="full"
@@ -71,6 +73,7 @@ export function AccountDetailsPage(): JSX.Element {
 						height="3.5rem"
 						minH="3.5rem"
 						maxHeight="3.5rem"
+						zIndex="docked"
 					/>
 					<Portal>
 						<MenuList>
@@ -140,18 +143,12 @@ export function AccountDetailsPage(): JSX.Element {
 					</Text>
 				</Flex>
 				<Flex
-					borderRadius="md"
-					overflow="hidden"
 					m="1rem"
 					direction="column"
-					gap="0.5rem"
+					gap="1rem"
+					mb="3rem"
 				>
-					{bankAccount.transactions?.map((transaction) => (
-						<AccountTransactionItem
-							key={transaction.id}
-							{...transaction}
-						/>
-					))}
+					<AccountTransactionList transactions={bankAccount.transactions ?? []} />
 				</Flex>
 			</>
 		);

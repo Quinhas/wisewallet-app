@@ -26,6 +26,7 @@ import {
 	AccountTransactionDTO
 } from 'services/wisewalletService/bankAccountsService';
 import { Category } from 'services/wisewalletService/categoryService';
+import { formatCurrency } from 'utils/formatCurrency';
 import {
 	insufficientBalanceMessage,
 	invalidDateMessage,
@@ -45,33 +46,11 @@ export function TransactionForm({
 	onFormSubmit
 }: TransactionFormProps): JSX.Element {
 	const [categories, setCategories] = useState<Category[] | null>([]);
-	const [selectedBankAccount, setSelectedBankAccount] = useState<string>();
+	const [selectedBankAccount, setSelectedBankAccount] = useState<string | undefined>(data?.bankAccountId);
 	const [showAvailableBalance, setShowAvailableBalance] = useState(false);
+	const [availableBalance, setAvailableBalance] = useState<{ value: number; formattedValue: string }>({ value: 0, formattedValue: formatCurrency(0) });
 	const [transactionValue, setTransactionValue] = useState<string>('0');
 	const { bankAccounts, getCategories, getBankAccounts } = useWisewallet();
-
-	const getMaxBalance = useCallback<
-		() => { value: number; formattedValue: string }
-	>(() => {
-		if (!bankAccounts || !selectedBankAccount) {
-			return {
-				value: 0,
-				formattedValue: Number(0).toLocaleString('pt-BR', {
-					currency: 'BRL',
-					style: 'currency'
-				})
-			};
-		}
-		const maxBalance =
-			bankAccounts.find((acc) => acc.id === selectedBankAccount)?.balance ?? 0;
-		return {
-			value: Number(maxBalance),
-			formattedValue: Number(maxBalance).toLocaleString('pt-BR', {
-				currency: 'BRL',
-				style: 'currency'
-			})
-		};
-	}, [bankAccounts, selectedBankAccount]);
 
 	const ValidationSchema = yup.object().shape({
 		bankAccountId: yup.string().required(requiredFieldMessage),
@@ -88,7 +67,7 @@ export function TransactionForm({
 			.when('type', {
 				is: 'EXPENSE',
 				then: (schema) =>
-					schema.max(getMaxBalance().value, insufficientBalanceMessage)
+					schema.max(availableBalance.value ?? 0, insufficientBalanceMessage)
 			})
 			.min(0.01, valueGreaterThanZeroMessage),
 		date: yup
@@ -139,6 +118,25 @@ export function TransactionForm({
 		getData();
 	}, [getData]);
 
+	useEffect(() => {
+		if (!bankAccounts || !selectedBankAccount || !showAvailableBalance) {
+			setAvailableBalance({
+				value: 0,
+				formattedValue: formatCurrency(0)
+			});
+			return;
+		}
+		const maxBalance =
+			bankAccounts.find((acc) => acc.id === selectedBankAccount)?.balance ?? 0;
+		setAvailableBalance({
+			value: Number(maxBalance),
+			formattedValue: Number(maxBalance).toLocaleString('pt-BR', {
+				currency: 'BRL',
+				style: 'currency'
+			})
+		});
+	}, [bankAccounts, selectedBankAccount, showAvailableBalance]);
+
 	const onSubmit: SubmitHandler<AccountTransactionDTO> = (values, e): void => {
 		e?.preventDefault();
 		onFormSubmit(values);
@@ -152,6 +150,7 @@ export function TransactionForm({
 				direction="column"
 				w="100%"
 				onSubmit={handleSubmit(onSubmit)}
+				noValidate
 			>
 				<FormControl
 					isInvalid={!!errors.bankAccountId}
@@ -193,7 +192,7 @@ export function TransactionForm({
 					{bankAccounts && bankAccounts.length !== 0 && (
 						<Flex gap="0.5rem">
 							<Select
-								defaultValue={data?.bankAccountId ?? -1}
+								defaultValue={data?.bankAccountId ?? '-1'}
 								{...register('bankAccountId', {
 									onChange: () => {
 										setSelectedBankAccount(getValues('bankAccountId'));
@@ -201,7 +200,7 @@ export function TransactionForm({
 								})}
 							>
 								<option
-									value={-1}
+									value="-1"
 									hidden
 									disabled
 								>
@@ -339,7 +338,7 @@ export function TransactionForm({
 					/>
 					{showAvailableBalance && (
 						<FormHelperText>
-							Available: {getMaxBalance().formattedValue}
+							Available: {availableBalance.formattedValue}
 						</FormHelperText>
 					)}
 

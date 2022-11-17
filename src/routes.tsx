@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import { Loading } from 'components/Loading';
 import Navbar from 'components/Navbar';
 import Tabs from 'components/Tabs';
@@ -27,11 +28,11 @@ function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element {
 
 	return (
 		<WisewalletContextProvider>
-			<>
-				<Navbar />
+			<Navbar />
+			<Box as="main" maxH="calc(100vh - 4rem - 4rem)" overflowY="scroll">
 				{children}
-				<Tabs />
-			</>
+			</Box>
+			<Tabs />
 		</WisewalletContextProvider>
 	);
 }

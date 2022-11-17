@@ -22,6 +22,7 @@ export default function Navbar(): JSX.Element {
 	return (
 		<>
 			<Flex
+				as="nav"
 				position="sticky"
 				w="full"
 				top={0}

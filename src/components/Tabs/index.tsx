@@ -30,6 +30,7 @@ export default function Tabs(): JSX.Element {
 
 	return (
 		<Flex
+			as="footer"
 			position="sticky"
 			w="full"
 			bottom={0}

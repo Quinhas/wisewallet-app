@@ -214,6 +214,7 @@ export function SignUpPage(): JSX.Element {
 					direction="column"
 					align="center"
 					gap=".75rem"
+					mb="4rem"
 				>
 					<Button
 						type="submit"
@@ -228,11 +229,11 @@ export function SignUpPage(): JSX.Element {
 						Already have an account?{' '}
 						<Link
 							as={RouterLink}
-							to="/signup"
+							to="/signin"
 							color="primaryApp.300"
 							fontWeight={500}
 						>
-							Sign Up
+							Sign In
 						</Link>
 					</Text>
 				</Flex>

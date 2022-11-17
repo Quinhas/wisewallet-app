@@ -2,7 +2,7 @@ import { extendTheme } from '@chakra-ui/react';
 import type { GlobalStyleProps } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 import { colors } from './colors';
-import { mediaQueries, scrollbar } from './custom';
+import { mediaQueries } from './custom';
 import { AccountCard } from './styledComponents/AccountCard';
 import { Button } from './styledComponents/Button';
 import { Checkbox } from './styledComponents/Checkbox';
@@ -32,6 +32,7 @@ const theme = extendTheme({
 			'#root': {
 				display: 'flex',
 				minHeight: '100vh',
+				maxHeight: '100vh',
 				flexDirection: 'column'
 			},
 			html: {
@@ -67,7 +68,6 @@ const theme = extendTheme({
 				fontFamily: 'body'
 			},
 			...mediaQueries,
-			...scrollbar
 		})
 	},
 	config: {
