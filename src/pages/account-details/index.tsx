@@ -11,7 +11,7 @@ import {
 	Portal,
 	Text
 } from '@chakra-ui/react';
-import { AccountTransactionList } from 'components/AccountTransactionList';
+import { AccountStatement } from 'components/AccountStatement';
 import { Loading } from 'components/Loading';
 import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft, DotsThree, Pencil, Plus, SmileySad } from 'phosphor-react';
@@ -148,7 +148,7 @@ export function AccountDetailsPage(): JSX.Element {
 					gap="1rem"
 					mb="3rem"
 				>
-					<AccountTransactionList transactions={bankAccount.transactions ?? []} />
+					<AccountStatement transactions={bankAccount.transactions ?? []} />
 				</Flex>
 			</>
 		);

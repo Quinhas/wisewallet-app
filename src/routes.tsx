@@ -5,6 +5,7 @@ import Tabs from 'components/Tabs';
 import { WisewalletContextProvider } from 'contexts/WisewalletContext';
 import { useAuth } from 'hooks/useAuth';
 import { AccountDetailsPage } from 'pages/account-details';
+import { AccountStatementPage } from 'pages/account-statement';
 import App from 'pages/App';
 import { EditAccountPage } from 'pages/edit-account';
 import { NewAccountPage } from 'pages/new-account';
@@ -96,14 +97,14 @@ export function CustomRoutes(): JSX.Element {
 					</ProtectedRoute>
 				}
 			/>
-			{/* <Route
-				path="/transfer/new"
+			<Route
+				path="/account-statement/"
 				element={
 					<ProtectedRoute>
-						<NewTransferPage />
+						<AccountStatementPage />
 					</ProtectedRoute>
 				}
-			/> */}
+			/>
 		</Routes>
 	);
 }

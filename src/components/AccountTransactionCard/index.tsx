@@ -1,14 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { Flex, Grid, Heading, Text, useStyleConfig } from '@chakra-ui/react';
-import { AccountTransaction } from 'services/wisewalletService/bankAccountsService';
 import { formatCurrency } from 'utils/formatCurrency';
 
-export default function AccountTransactionItem({
+interface AccountTransactionCardProps {
+	title: string;
+	subtitle?: string;
+	value: number;
+	type: 'INCOME' | 'EXPENSE';
+}
+
+export default function AccountTransactionCard({
 	title,
+	subtitle,
 	value,
 	type,
-	description
-}: AccountTransaction): JSX.Element {
+}: AccountTransactionCardProps): JSX.Element {
 	const variants = {
 		variant: type.toLowerCase()
 	};
@@ -21,10 +27,14 @@ export default function AccountTransactionItem({
 				direction="column"
 				overflow="hidden"
 			>
-				<Heading overflow="hidden"
+				<Heading
+					overflow="hidden"
 					whiteSpace="nowrap"
-					textOverflow="ellipsis">{title ?? '-'}</Heading>
-				<Text
+					textOverflow="ellipsis"
+				>
+					{title ?? '-'}
+				</Heading>
+				{subtitle && (<Text
 					fontFamily="heading"
 					color="gray.500"
 					fontSize="0.75rem"
@@ -33,8 +43,8 @@ export default function AccountTransactionItem({
 					whiteSpace="nowrap"
 					textOverflow="ellipsis"
 				>
-					{description}
-				</Text>
+					{subtitle}
+				</Text>)}
 			</Flex>
 			<Flex
 				direction="column"

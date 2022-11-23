@@ -9,7 +9,7 @@ import { AccountTransactionDTO } from 'services/wisewalletService/bankAccountsSe
 export function NewTransactionPage(): JSX.Element {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { createTransaction } = useWisewallet();
+	const { createAccountTransaction } = useWisewallet();
 	const { state } = location as {
 		state: {
 			bankAccountId: string | undefined;
@@ -17,7 +17,7 @@ export function NewTransactionPage(): JSX.Element {
 	};
 
 	async function onSubmit(data: AccountTransactionDTO): Promise<void> {
-		await createTransaction({
+		await createAccountTransaction({
 			accountTransaction: {
 				bankAccountId: data.bankAccountId,
 				date: parseISO(String(data.date)),

@@ -1,15 +1,16 @@
 import { Divider, Flex, Text } from "@chakra-ui/react";
-import AccountTransactionItem from "components/AccountTransactionItem";
+import AccountTransactionCard from "components/AccountTransactionCard";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useCallback } from "react";
 import { AccountTransaction } from "services/wisewalletService/bankAccountsService";
 
-interface AccountTransactionListProps {
+interface AccountStatementProps {
 	transactions: AccountTransaction[];
+	showAccount?: boolean;
 }
 
-export function AccountTransactionList({ transactions }: AccountTransactionListProps): JSX.Element {
+export function AccountStatement({ transactions, showAccount }: AccountStatementProps): JSX.Element {
 
 	const groupedTransactions = useCallback((): Array<{ date: string; transactions: AccountTransaction[] }> => {
 		if (!transactions) {
@@ -49,9 +50,12 @@ export function AccountTransactionList({ transactions }: AccountTransactionListP
 						<Flex direction="column" gap="0.25rem">
 							{
 								date.transactions.map((transaction) => (
-									<AccountTransactionItem
+									<AccountTransactionCard
 										key={transaction.id}
-										{...transaction}
+										title={transaction.title}
+										subtitle={showAccount ? transaction.bankAccount.name : transaction.description}
+										type={transaction.type}
+										value={transaction.value}
 									/>
 								))
 							}

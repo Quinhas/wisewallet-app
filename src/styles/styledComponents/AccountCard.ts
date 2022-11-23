@@ -1,13 +1,11 @@
 import { defineStyleConfig } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import chroma from 'chroma-js';
-import { colors } from 'styles/colors';
 
 export const AccountCard = defineStyleConfig({
 	baseStyle(props) {
 		const { colorScheme: c } = props;
 		const color = c;
-		const hexValue = colors?.[color ?? 'gray'];
 
 		return {
 			display: 'flex',
@@ -37,7 +35,7 @@ export const AccountCard = defineStyleConfig({
 				fontFamily: 'mono',
 				fontSize: '1rem',
 				textTransform: 'uppercase',
-				color: chroma(hexValue[300]).darken().hex(),
+				color: chroma('#a6a6a6').darken().hex(),
 				maxW: 'calc(100% - 2.5rem)',
 				overflow: 'hidden',
 				whiteSpace: 'nowrap',

@@ -26,6 +26,7 @@ export interface AccountTransaction {
 	categoryId?: number;
 	createdAt: Date;
 	updatedAt: Date;
+	bankAccount: BankAccount;
 }
 
 export interface BankAccountDTO {
@@ -174,6 +175,26 @@ export const bankAccounts = {
 	},
 
 	transactions: {
+		async getAll(): Promise<AccountTransaction[]> {
+			try {
+				const { data } = await httpClient.get<AccountTransaction[]>(
+					`/account/transactions`,
+					{
+						headers: { Authorization: `Bearer ${getAccessToken()}` }
+					}
+				);
+				return data;
+			} catch (error: unknown) {
+				if (axios.isAxiosError(error)) {
+					const { data } = error.response as { data: ErrorResponse };
+					throw new WisewalletApplicationException(data.message, data.errors);
+				}
+
+				throw new WisewalletApplicationException(
+					'Could not continue. Contact an administrator.'
+				);
+			}
+		},
 		async create({
 			accountTransaction
 		}: CreateAccountTransactionParams): Promise<AccountTransaction> {

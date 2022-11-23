@@ -38,10 +38,11 @@ export interface WisewalletContextProps {
 	updateBankAccount: (data: UpdateBankAccountParams) => Promise<void>;
 	deleteBankAccount: (data: DeleteBankAccountParams) => Promise<void>;
 	getCategories: () => Promise<Category[] | null>;
-	createTransaction: (
+	createCategory: (data: CreateCategoryParams) => Promise<Category | null>;
+	getAllAccountTransactions: () => Promise<AccountTransaction[] | null>;
+	createAccountTransaction: (
 		data: CreateAccountTransactionParams
 	) => Promise<AccountTransaction | null>;
-	createCategory: (data: CreateCategoryParams) => Promise<Category | null>;
 }
 
 interface WisewalletContextProviderProps {
@@ -246,7 +247,33 @@ export function WisewalletContextProvider({
 		[toast]
 	);
 
-	const createTransaction = useCallback(
+	const getAllAccountTransactions = useCallback(async (): Promise<AccountTransaction[] | null> => {
+		try {
+			const data = await wisewallet.transactions.getAll();
+			return data;
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				if (error.errors?.length !== 0) {
+					error.errors?.forEach((err) => {
+						toast({
+							...errorToast,
+							description: err.message
+						});
+					});
+					return null;
+				}
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not create transaction. Try again.'
+			});
+		}
+
+		return null;
+	}, [toast])
+
+	const createAccountTransaction = useCallback(
 		async ({
 			accountTransaction
 		}: CreateAccountTransactionParams): Promise<AccountTransaction | null> => {
@@ -347,8 +374,9 @@ export function WisewalletContextProvider({
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,
-			createTransaction,
-			createCategory
+			createCategory,
+			getAllAccountTransactions,
+			createAccountTransaction,
 		}),
 		[
 			bankAccounts,
@@ -359,8 +387,9 @@ export function WisewalletContextProvider({
 			updateBankAccount,
 			deleteBankAccount,
 			getCategories,
-			createTransaction,
-			createCategory
+			createCategory,
+			getAllAccountTransactions,
+			createAccountTransaction,
 		]
 	);
 

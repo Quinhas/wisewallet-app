@@ -19,7 +19,7 @@ export default function Tabs(): JSX.Element {
 		{
 			icon: Receipt,
 			text: 'Extrato',
-			href: '/statement'
+			href: '/account-statement'
 		}
 		// {
 		//   icon: FaChartPie,
