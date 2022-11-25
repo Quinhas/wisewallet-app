@@ -10,10 +10,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FloppyDisk } from 'phosphor-react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import {
-	BankAccount,
-	BankAccountDTO
-} from 'services/wisewalletService/bankAccountsService';
-import {
 	maxLengthMessage,
 	requiredFieldMessage
 } from 'utils/formValidationMessages';

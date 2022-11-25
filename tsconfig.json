@@ -28,6 +28,11 @@
 				"/hooks/*"
 			]
 		},
+		"typeRoots": [
+			"./node_modules/@types",
+			"./src/@types",
+			"./src/models"
+		],
 		"allowJs": false,
 		"skipLibCheck": true,
 		"esModuleInterop": false,

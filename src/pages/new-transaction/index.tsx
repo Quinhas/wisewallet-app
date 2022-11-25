@@ -1,35 +1,60 @@
-import { Flex, Heading, IconButton, useColorModeValue } from '@chakra-ui/react';
-import { TransactionForm } from 'components/TransactionForm';
+import {
+	Flex,
+	Heading,
+	IconButton,
+	useColorModeValue,
+	useToast
+} from '@chakra-ui/react';
+import { AccountTransactionForm } from 'components/AccountTransactionForm';
 import { parseISO } from 'date-fns';
-import { useWisewallet } from 'hooks/useWisewallet';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 import { ArrowLeft } from 'phosphor-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { AccountTransactionDTO } from 'services/wisewalletService/bankAccountsService';
+import { wisewallet } from 'services/wisewalletService';
+import { errorToast } from 'utils/toastConfig';
 
 export function NewTransactionPage(): JSX.Element {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const { createAccountTransaction } = useWisewallet();
 	const { state } = location as {
 		state: {
 			bankAccountId: string | undefined;
 		} | null;
 	};
+	const toast = useToast();
 
 	async function onSubmit(data: AccountTransactionDTO): Promise<void> {
-		await createAccountTransaction({
-			accountTransaction: {
-				bankAccountId: data.bankAccountId,
-				date: parseISO(String(data.date)),
-				title: data.title,
-				type: data.type,
-				value: Number(data.value),
-				categoryId: data.categoryId && Number(data.categoryId) !== -1 ? Number(data.categoryId) : undefined,
-				description: data.description,
-				isRecurrent: data.isRecurrent
+		try {
+			await wisewallet.bankAccounts.transactions.create({
+				data: {
+					bankAccountId: data.bankAccountId,
+					date: parseISO(String(data.date)),
+					title: data.title,
+					type: data.type,
+					value: Number(data.value),
+					categoryId:
+						data.categoryId && Number(data.categoryId) !== -1
+							? Number(data.categoryId)
+							: undefined,
+					description: data.description,
+					isRecurrent: data.isRecurrent
+				}
+			});
+			navigate(state?.bankAccountId ? `/account/${state.bankAccountId}` : '/');
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
 			}
-		});
-		navigate(state?.bankAccountId ? `/account/${state.bankAccountId}` : '/');
+
+			toast({
+				...errorToast,
+				description: 'Could not update bank account. Try again.'
+			});
+		}
 	}
 
 	return (
@@ -66,7 +91,7 @@ export function NewTransactionPage(): JSX.Element {
 				borderRadius="2xl"
 				boxShadow="md"
 			>
-				<TransactionForm
+				<AccountTransactionForm
 					data={{ bankAccountId: state?.bankAccountId }}
 					onFormSubmit={onSubmit}
 				/>

@@ -2,11 +2,35 @@ import { Button, Flex, Icon, Text } from '@chakra-ui/react';
 import AccountCard from 'components/AccountCard';
 import NewAccountCard from 'components/AccountCard/new';
 import AccountCardSkeleton from 'components/AccountCard/skeleton';
-import { useWisewallet } from 'hooks/useWisewallet';
 import { SmileySad } from 'phosphor-react';
+import { useCallback, useEffect, useState } from 'react';
+import { wisewallet } from 'services/wisewalletService';
+import { formatDate } from 'utils/formatDate';
 
 export function AccountsList(): JSX.Element {
-	const { bankAccounts, getBankAccounts } = useWisewallet();
+	const [bankAccounts, setBankAccounts] = useState<
+		BankAccount[] | undefined | null
+	>();
+
+	const getAllBankAccounts = useCallback(async () => {
+		setBankAccounts(undefined);
+		try {
+			const data = await wisewallet.bankAccounts.getAll();
+			const formattedData = data.map((acc) => ({
+				...acc,
+				createdAt: formatDate(acc.createdAt),
+				updatedAt: formatDate(acc.updatedAt),
+				transactions: []
+			}));
+			setBankAccounts(formattedData);
+		} catch (error) {
+			setBankAccounts(null);
+		}
+	}, []);
+
+	useEffect(() => {
+		getAllBankAccounts();
+	}, [getAllBankAccounts]);
 
 	if (bankAccounts && bankAccounts.length === 0) {
 		return (
@@ -94,7 +118,7 @@ export function AccountsList(): JSX.Element {
 			<Button
 				colorScheme="primaryApp"
 				onClick={() => {
-					getBankAccounts();
+					getAllBankAccounts();
 				}}
 			>
 				Try again!

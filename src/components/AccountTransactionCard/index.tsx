@@ -13,7 +13,7 @@ export default function AccountTransactionCard({
 	title,
 	subtitle,
 	value,
-	type,
+	type
 }: AccountTransactionCardProps): JSX.Element {
 	const variants = {
 		variant: type.toLowerCase()
@@ -34,17 +34,19 @@ export default function AccountTransactionCard({
 				>
 					{title ?? '-'}
 				</Heading>
-				{subtitle && (<Text
-					fontFamily="heading"
-					color="gray.500"
-					fontSize="0.75rem"
-					textTransform="uppercase"
-					overflow="hidden"
-					whiteSpace="nowrap"
-					textOverflow="ellipsis"
-				>
-					{subtitle}
-				</Text>)}
+				{subtitle && (
+					<Text
+						fontFamily="heading"
+						color="gray.500"
+						fontSize="0.75rem"
+						textTransform="uppercase"
+						overflow="hidden"
+						whiteSpace="nowrap"
+						textOverflow="ellipsis"
+					>
+						{subtitle}
+					</Text>
+				)}
 			</Flex>
 			<Flex
 				direction="column"

@@ -3,34 +3,46 @@ import {
 	Flex,
 	Heading,
 	Icon,
-	IconButton, Text
+	IconButton,
+	Text
 } from '@chakra-ui/react';
 import { AccountStatement } from 'components/AccountStatement';
 import { Loading } from 'components/Loading';
-import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft, SmileySad } from 'phosphor-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AccountTransaction } from 'services/wisewalletService/bankAccountsService';
+import { wisewallet } from 'services/wisewalletService';
+import { formatDate } from 'utils/formatDate';
 
 export function AccountStatementPage(): JSX.Element {
 	const [transactions, setTransactions] = useState<
 		AccountTransaction[] | undefined | null
 	>();
-	const { getAllAccountTransactions } = useWisewallet();
 	const navigate = useNavigate();
 
 	const getData = useCallback(async (): Promise<void> => {
 		setTransactions(undefined);
 		try {
-			const data = await getAllAccountTransactions();
-			setTransactions(data);
+			const data = await wisewallet.bankAccounts.transactions.getAll();
+			const formattedData: AccountTransaction[] = data.map((transaction) => ({
+				id: transaction.id,
+				holderId: transaction.holderId,
+				title: transaction.title,
+				type: transaction.type,
+				bankAccount: transaction.bankAccount,
+				bankAccountId: transaction.bankAccountId,
+				value: transaction.value,
+				categoryId: transaction.categoryId,
+				description: transaction.description,
+				date: formatDate(transaction.date),
+				createdAt: formatDate(transaction.createdAt),
+				updatedAt: formatDate(transaction.updatedAt)
+			}));
+			setTransactions(formattedData);
 		} catch (error) {
 			setTransactions(null);
 		}
-	}, [getAllAccountTransactions]);
-
-
+	}, []);
 
 	useEffect(() => {
 		getData();
@@ -62,7 +74,10 @@ export function AccountStatementPage(): JSX.Element {
 					gap="1rem"
 					mb="3rem"
 				>
-					<AccountStatement transactions={transactions ?? []} showAccount />
+					<AccountStatement
+						transactions={transactions ?? []}
+						showAccount
+					/>
 				</Flex>
 			</>
 		);

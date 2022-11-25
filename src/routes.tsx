@@ -2,7 +2,6 @@ import { Box } from '@chakra-ui/react';
 import { Loading } from 'components/Loading';
 import Navbar from 'components/Navbar';
 import Tabs from 'components/Tabs';
-import { WisewalletContextProvider } from 'contexts/WisewalletContext';
 import { useAuth } from 'hooks/useAuth';
 import { AccountDetailsPage } from 'pages/account-details';
 import { AccountStatementPage } from 'pages/account-statement';
@@ -28,13 +27,17 @@ function ProtectedRoute({ children }: { children: JSX.Element }): JSX.Element {
 	}
 
 	return (
-		<WisewalletContextProvider>
+		<>
 			<Navbar />
-			<Box as="main" maxH="calc(100vh - 4rem - 4rem)" overflowY="scroll">
+			<Box
+				as="main"
+				maxH="calc(100vh - 4rem - 4rem)"
+				overflowY="scroll"
+			>
 				{children}
 			</Box>
 			<Tabs />
-		</WisewalletContextProvider>
+		</>
 	);
 }
 

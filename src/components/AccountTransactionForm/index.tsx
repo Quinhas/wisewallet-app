@@ -10,6 +10,7 @@ import {
 	InputGroup,
 	InputLeftAddon,
 	Select,
+	Skeleton,
 	Text,
 	Textarea,
 	useDisclosure
@@ -17,16 +18,13 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup';
 import AccountFormModal from 'components/AccountFormModal';
 import CategoryFormModal from 'components/CategoryFormModal';
-import { useWisewallet } from 'hooks/useWisewallet';
+import { parseISO } from 'date-fns';
 import { FloppyDisk, Plus } from 'phosphor-react';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-	AccountTransaction,
-	AccountTransactionDTO
-} from 'services/wisewalletService/bankAccountsService';
-import { Category } from 'services/wisewalletService/categoryService';
+import { wisewallet } from 'services/wisewalletService';
 import { formatCurrency } from 'utils/formatCurrency';
+import { formatDate } from 'utils/formatDate';
 import {
 	insufficientBalanceMessage,
 	invalidDateMessage,
@@ -36,21 +34,30 @@ import {
 } from 'utils/formValidationMessages';
 import * as yup from 'yup';
 
-interface TransactionFormProps {
+interface AccountTransactionFormProps {
 	data?: Partial<AccountTransaction>;
 	onFormSubmit: (data: AccountTransactionDTO) => void;
 }
 
-export function TransactionForm({
+export function AccountTransactionForm({
 	data,
 	onFormSubmit
-}: TransactionFormProps): JSX.Element {
-	const [categories, setCategories] = useState<Category[] | null>([]);
-	const [selectedBankAccount, setSelectedBankAccount] = useState<string | undefined>(data?.bankAccountId);
+}: AccountTransactionFormProps): JSX.Element {
+	const [categories, setCategories] = useState<Category[] | null | undefined>(
+		[]
+	);
+	const [bankAccounts, setBankAccounts] = useState<
+		BankAccount[] | null | undefined
+	>();
+	const [selectedBankAccount, setSelectedBankAccount] = useState<
+		string | undefined
+	>(data?.bankAccountId);
 	const [showAvailableBalance, setShowAvailableBalance] = useState(false);
-	const [availableBalance, setAvailableBalance] = useState<{ value: number; formattedValue: string }>({ value: 0, formattedValue: formatCurrency(0) });
+	const [availableBalance, setAvailableBalance] = useState<{
+		value: number;
+		formattedValue: string;
+	}>({ value: 0, formattedValue: formatCurrency(0) });
 	const [transactionValue, setTransactionValue] = useState<string>('0');
-	const { bankAccounts, getCategories, getBankAccounts } = useWisewallet();
 
 	const ValidationSchema = yup.object().shape({
 		bankAccountId: yup.string().required(requiredFieldMessage),
@@ -91,7 +98,7 @@ export function TransactionForm({
 			type: data?.type,
 			title: data?.title ?? '',
 			value: data?.value ?? 0,
-			date: data?.date ?? new Date(),
+			date: data?.date ? parseISO(data.date) : new Date(),
 			categoryId: data?.categoryId,
 			description: data?.description ?? ''
 		}
@@ -109,14 +116,43 @@ export function TransactionForm({
 		onClose: onCloseCategoryModal
 	} = useDisclosure();
 
-	const getData = useCallback(async () => {
-		const dataCategories = await getCategories();
-		setCategories(dataCategories);
-	}, [getCategories]);
+	const getCategories = useCallback(async () => {
+		setCategories(undefined);
+		try {
+			const apiCategories = await wisewallet.categories.getAll();
+			const formattedCategories: Category[] = apiCategories.map((category) => ({
+				...category,
+				createdAt: formatDate(category.createdAt),
+				updatedAt: formatDate(category.updatedAt)
+			}));
+			setCategories(formattedCategories);
+		} catch (error) {
+			setCategories(null);
+		}
+	}, []);
+
+	const getBankAccounts = useCallback(async () => {
+		setBankAccounts(undefined);
+		try {
+			const apiBankAccounts = await wisewallet.bankAccounts.getAll();
+			const formattedBankAccounts: BankAccount[] = apiBankAccounts.map(
+				(acc) => ({
+					...acc,
+					createdAt: formatDate(acc.createdAt),
+					updatedAt: formatDate(acc.updatedAt),
+					transactions: []
+				})
+			);
+			setBankAccounts(formattedBankAccounts);
+		} catch (error) {
+			setBankAccounts(null);
+		}
+	}, []);
 
 	useEffect(() => {
-		getData();
-	}, [getData]);
+		getCategories();
+		getBankAccounts();
+	}, [getCategories, getBankAccounts]);
 
 	useEffect(() => {
 		if (!bankAccounts || !selectedBankAccount || !showAvailableBalance) {
@@ -157,6 +193,24 @@ export function TransactionForm({
 					isRequired
 				>
 					<FormLabel htmlFor="bankAccountId">Bank Account</FormLabel>
+					{bankAccounts === undefined && (
+						<Flex
+							justify="space-between"
+							align="center"
+							gap="0.5rem"
+						>
+							<Select
+								as={Skeleton}
+								disabled
+							/>
+							<IconButton
+								aria-label="Create a new account"
+								icon={<Plus />}
+								disabled
+								as={Skeleton}
+							/>
+						</Flex>
+					)}
 					{bankAccounts === null && (
 						<Flex
 							justify="space-between"
@@ -310,9 +364,9 @@ export function TransactionForm({
 								formattedValue =
 									parts[1] || parts[1] === ''
 										? formattedValue.concat(
-											',',
-											parts[1].replace(/[^0-9]/g, '')
-										)
+												',',
+												parts[1].replace(/[^0-9]/g, '')
+										  )
 										: formattedValue;
 								const fixedValue = formattedValue.match(
 									/^[0-9.]+(?:,[0-9.]{0,2})?/
@@ -361,6 +415,24 @@ export function TransactionForm({
 
 				<FormControl isInvalid={!!errors.categoryId}>
 					<FormLabel htmlFor="balance">Category</FormLabel>
+					{categories === undefined && (
+						<Flex
+							justify="space-between"
+							align="center"
+							gap="0.5rem"
+						>
+							<Select
+								as={Skeleton}
+								disabled
+							/>
+							<IconButton
+								aria-label="Create a new category"
+								icon={<Plus />}
+								disabled
+								as={Skeleton}
+							/>
+						</Flex>
+					)}
 					{categories === null && (
 						<Flex
 							justify="space-between"
@@ -437,12 +509,15 @@ export function TransactionForm({
 			</Flex>
 			<AccountFormModal
 				isOpen={isOpenAccountModal}
-				onClose={onCloseAccountModal}
+				onClose={() => {
+					getBankAccounts();
+					onCloseAccountModal();
+				}}
 			/>
 			<CategoryFormModal
 				isOpen={isOpenCategoryModal}
 				onClose={() => {
-					getData();
+					getCategories();
 					onCloseCategoryModal();
 				}}
 			/>

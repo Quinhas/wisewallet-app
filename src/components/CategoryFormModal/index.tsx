@@ -4,11 +4,13 @@ import {
 	ModalCloseButton,
 	ModalContent,
 	ModalHeader,
-	ModalOverlay
+	ModalOverlay,
+	useToast
 } from '@chakra-ui/react';
 import { CategoryForm } from 'components/CategoryForm';
-import { useWisewallet } from 'hooks/useWisewallet';
-import { CategoryDTO } from 'services/wisewalletService/categoryService';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
+import { wisewallet } from 'services/wisewalletService';
+import { errorToast } from 'utils/toastConfig';
 
 interface CategoryFormModalProps {
 	isOpen: boolean;
@@ -19,15 +21,30 @@ export default function CategoryFormModal({
 	isOpen,
 	onClose
 }: CategoryFormModalProps): JSX.Element {
-	const { createCategory } = useWisewallet();
+	const toast = useToast();
 
 	async function onSubmit(data: CategoryDTO): Promise<void> {
-		await createCategory({
-			category: {
-				description: data.description
+		try {
+			await wisewallet.categories.create({
+				data: {
+					description: data.description
+				}
+			});
+			onClose();
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
 			}
-		});
-		onClose();
+
+			toast({
+				...errorToast,
+				description: 'Could not update bank account. Try again.'
+			});
+		}
 	}
 
 	return (

@@ -9,9 +9,11 @@ import {
 	Textarea
 } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useWisewallet } from 'hooks/useWisewallet';
 import { FloppyDisk } from 'phosphor-react';
+import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { wisewallet } from 'services/wisewalletService';
+import { formatDate } from 'utils/formatDate';
 import {
 	invalidDateMessage,
 	maxLengthMessage,
@@ -44,7 +46,9 @@ const ValidationSchema = yup.object().shape({
 });
 
 export function TransferForm({ onFormSubmit }: TransferFormProps): JSX.Element {
-	const { bankAccounts } = useWisewallet();
+	const [bankAccounts, setBankAccounts] = useState<
+		BankAccount[] | null | undefined
+	>();
 	const {
 		register,
 		handleSubmit,
@@ -58,6 +62,28 @@ export function TransferForm({ onFormSubmit }: TransferFormProps): JSX.Element {
 		e?.preventDefault();
 		onFormSubmit(values);
 	};
+
+	const getBankAccounts = useCallback(async () => {
+		setBankAccounts(undefined);
+		try {
+			const apiBankAccounts = await wisewallet.bankAccounts.getAll();
+			const formattedBankAccounts: BankAccount[] = apiBankAccounts.map(
+				(acc) => ({
+					...acc,
+					createdAt: formatDate(acc.createdAt),
+					updatedAt: formatDate(acc.updatedAt),
+					transactions: []
+				})
+			);
+			setBankAccounts(formattedBankAccounts);
+		} catch (error) {
+			setBankAccounts(null);
+		}
+	}, []);
+
+	useEffect(() => {
+		getBankAccounts();
+	}, [getBankAccounts]);
 
 	return (
 		<Flex
