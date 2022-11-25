@@ -11,10 +11,6 @@ import {
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { wisewallet } from 'services/wisewalletService';
-import type {
-	SignInParams,
-	SignUpParams
-} from 'services/wisewalletService/authService';
 
 interface UserProps {
 	id: string;
@@ -130,7 +126,7 @@ export function AuthContextProvider({
 
 	const signIn = useCallback(
 		async ({ email, password }: SignInParams) => {
-			const res = await wisewallet.signIn({
+			const res = await wisewallet.auth.signIn({
 				email,
 				password
 			});
@@ -143,7 +139,7 @@ export function AuthContextProvider({
 
 	const signUp = useCallback(
 		async ({ name, email, password, birthdate }: SignUpParams) => {
-			const res = await wisewallet.signUp({
+			const res = await wisewallet.auth.signUp({
 				name,
 				email,
 				password,

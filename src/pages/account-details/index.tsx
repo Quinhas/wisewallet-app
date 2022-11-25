@@ -13,18 +13,17 @@ import {
 } from '@chakra-ui/react';
 import { AccountStatement } from 'components/AccountStatement';
 import { Loading } from 'components/Loading';
-import { useWisewallet } from 'hooks/useWisewallet';
 import { ArrowLeft, DotsThree, Pencil, Plus, SmileySad } from 'phosphor-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BankAccount } from 'services/wisewalletService/bankAccountsService';
+import { wisewallet } from 'services/wisewalletService';
+import { formatDate } from 'utils/formatDate';
 
 export function AccountDetailsPage(): JSX.Element {
 	const [bankAccount, setBankAccount] = useState<
 		BankAccount | undefined | null
 	>();
 	const { id } = useParams<{ id: string }>();
-	const { getBankAccount } = useWisewallet();
 	const navigate = useNavigate();
 
 	const getData = useCallback(async (): Promise<void> => {
@@ -33,14 +32,30 @@ export function AccountDetailsPage(): JSX.Element {
 			if (!id) {
 				throw new Error('ID is required.');
 			}
-			const data = await getBankAccount({ id });
-			setBankAccount(data);
+			const data = await wisewallet.bankAccounts.getByID({ id });
+			setBankAccount({
+				...data,
+				createdAt: formatDate(data.createdAt),
+				updatedAt: formatDate(data.updatedAt),
+				transactions: data.transactions?.map((transaction) => ({
+					id: transaction.id,
+					holderId: transaction.holderId,
+					title: transaction.title,
+					type: transaction.type,
+					bankAccount: transaction.bankAccount,
+					bankAccountId: transaction.bankAccountId,
+					value: transaction.value,
+					categoryId: transaction.categoryId,
+					description: transaction.description,
+					date: formatDate(transaction.date),
+					createdAt: formatDate(transaction.createdAt),
+					updatedAt: formatDate(transaction.updatedAt)
+				}))
+			});
 		} catch (error) {
 			setBankAccount(null);
 		}
-	}, [getBankAccount, id]);
-
-
+	}, [id]);
 
 	useEffect(() => {
 		getData();

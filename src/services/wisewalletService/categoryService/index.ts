@@ -1,49 +1,19 @@
 import axios from 'axios';
 import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 import { httpClient } from 'utils/httpClient';
-import type { ErrorResponse } from '..';
 import { getAccessToken } from '../utils/getAccessToken';
 
-export interface CategoryDTO {
-	description: string;
-}
-
-export interface Category {
-	id: number;
-	user: string;
-	description: string;
-	createdAt: Date;
-	updatedAt: Date;
-}
-
-export interface GetBankAccountByIDParams {
-	id: number;
-}
-
-export interface CreateCategoryParams {
-	category: CategoryDTO;
-}
-
-export interface UpdateCategoryParams {
-	id: string;
-	category: Partial<Category>;
-}
-
-export interface DeleteBankAccountParams {
-	id: number;
-}
-
-export const categories = {
-	async getAllCategories(): Promise<Category[]> {
+export const categoryService: CategoryService = {
+	async getAll() {
 		try {
-			const { data } = await httpClient.get<Category[]>('/categories/', {
+			const { data } = await httpClient.get<APICategory[]>('/categories/', {
 				headers: { Authorization: `Bearer ${getAccessToken()}` }
 			});
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				const { data } = error.response as { data: ErrorResponse };
-				throw new WisewalletApplicationException(data.message, data.errors);
+				const { data } = error.response as { data: APIError };
+				throw new WisewalletApplicationException(data.error.message);
 			}
 
 			throw new WisewalletApplicationException(
@@ -52,16 +22,16 @@ export const categories = {
 		}
 	},
 
-	async getCategoryByID({ id }: GetBankAccountByIDParams): Promise<Category> {
+	async getByID({ id }) {
 		try {
-			const { data } = await httpClient.get<Category>(`/categories/${id}`, {
+			const { data } = await httpClient.get<APICategory>(`/categories/${id}`, {
 				headers: { Authorization: `Bearer ${getAccessToken()}` }
 			});
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				const { data } = error.response as { data: ErrorResponse };
-				throw new WisewalletApplicationException(data.message, data.errors);
+				const { data } = error.response as { data: APIError };
+				throw new WisewalletApplicationException(data.error.message);
 			}
 
 			throw new WisewalletApplicationException(
@@ -70,9 +40,9 @@ export const categories = {
 		}
 	},
 
-	async createCategory({ category }: CreateCategoryParams): Promise<Category> {
+	async create({ data: category }) {
 		try {
-			const { data } = await httpClient.post<Category>(
+			const { data } = await httpClient.post<APICategory>(
 				`/categories/`,
 				category,
 				{
@@ -82,8 +52,8 @@ export const categories = {
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				const { data } = error.response as { data: ErrorResponse };
-				throw new WisewalletApplicationException(data.message, data.errors);
+				const { data } = error.response as { data: APIError };
+				throw new WisewalletApplicationException(data.error.message);
 			}
 
 			throw new WisewalletApplicationException(
@@ -92,12 +62,9 @@ export const categories = {
 		}
 	},
 
-	async updateCategory({
-		id,
-		category
-	}: UpdateCategoryParams): Promise<Category> {
+	async update({ id, data: category }) {
 		try {
-			const { data } = await httpClient.put<Category>(
+			const { data } = await httpClient.put<APICategory>(
 				`/categories/${id}`,
 				category,
 				{
@@ -107,8 +74,8 @@ export const categories = {
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				const { data } = error.response as { data: ErrorResponse };
-				throw new WisewalletApplicationException(data.message, data.errors);
+				const { data } = error.response as { data: APIError };
+				throw new WisewalletApplicationException(data.error.message);
 			}
 
 			throw new WisewalletApplicationException(
@@ -117,16 +84,19 @@ export const categories = {
 		}
 	},
 
-	async deleteCategory({ id }: DeleteBankAccountParams): Promise<Category> {
+	async delete({ id }) {
 		try {
-			const { data } = await httpClient.delete<Category>(`/categories/${id}`, {
-				headers: { Authorization: `Bearer ${getAccessToken()}` }
-			});
+			const { data } = await httpClient.delete<APICategory>(
+				`/categories/${id}`,
+				{
+					headers: { Authorization: `Bearer ${getAccessToken()}` }
+				}
+			);
 			return data;
 		} catch (error: unknown) {
 			if (axios.isAxiosError(error)) {
-				const { data } = error.response as { data: ErrorResponse };
-				throw new WisewalletApplicationException(data.message, data.errors);
+				const { data } = error.response as { data: APIError };
+				throw new WisewalletApplicationException(data.error.message);
 			}
 
 			throw new WisewalletApplicationException(

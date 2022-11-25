@@ -1,19 +1,41 @@
-import { Flex, Heading, IconButton, useColorModeValue } from '@chakra-ui/react';
+import {
+	Flex,
+	Heading,
+	IconButton,
+	useColorModeValue,
+	useToast
+} from '@chakra-ui/react';
 import { AccountForm } from 'components/AccountForm';
-import { useWisewallet } from 'hooks/useWisewallet';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 import { ArrowLeft } from 'phosphor-react';
 import { useNavigate } from 'react-router-dom';
-import { BankAccountDTO } from 'services/wisewalletService/bankAccountsService';
+import { wisewallet } from 'services/wisewalletService';
+import { errorToast } from 'utils/toastConfig';
 
 export function NewAccountPage(): JSX.Element {
 	const navigate = useNavigate();
-	const { createBankAccount } = useWisewallet();
+	const toast = useToast();
 
-	function onSubmit(data: BankAccountDTO): void {
-		createBankAccount({
-			bankAccount: data
-		});
-		navigate('/', { relative: 'path' });
+	async function onSubmit(data: BankAccountDTO): Promise<void> {
+		try {
+			const bankAccount = await wisewallet.bankAccounts.create({
+				data
+			});
+			navigate(`/account/${bankAccount.id}`);
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not update bank account. Try again.'
+			});
+		}
 	}
 
 	return (

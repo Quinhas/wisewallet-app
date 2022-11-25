@@ -11,41 +11,70 @@ import {
 	IconButton,
 	Text,
 	useColorModeValue,
-	useDisclosure
+	useDisclosure,
+	useToast
 } from '@chakra-ui/react';
 import { AccountForm } from 'components/AccountForm';
 import { Loading } from 'components/Loading';
-import { useWisewallet } from 'hooks/useWisewallet';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 import { ArrowLeft, Trash } from 'phosphor-react';
 import { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-	BankAccount,
-	BankAccountDTO
-} from 'services/wisewalletService/bankAccountsService';
+import { wisewallet } from 'services/wisewalletService';
+import { errorToast } from 'utils/toastConfig';
 
 export function EditAccountPage(): JSX.Element {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const { updateBankAccount, deleteBankAccount } = useWisewallet();
 	const { bankAccount } = location.state as { bankAccount: BankAccount };
 	const bgColor = useColorModeValue('white', 'black');
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const cancelRef = useRef<HTMLButtonElement | null>(null);
+	const toast = useToast();
 
-	function onSubmit(data: BankAccountDTO): void {
-		updateBankAccount({
-			id: bankAccount.id,
-			bankAccount: data
-		});
-		navigate('../', { relative: 'path' });
+	async function onSubmit(data: BankAccountDTO): Promise<void> {
+		try {
+			await wisewallet.bankAccounts.update({
+				id: bankAccount.id,
+				data
+			});
+			navigate('../', { relative: 'path' });
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not update bank account. Try again.'
+			});
+		}
 	}
 
-	function handleDelete(): void {
-		deleteBankAccount({
-			id: bankAccount.id
-		});
-		navigate('/', { relative: 'path' });
+	async function handleDelete(): Promise<void> {
+		try {
+			await wisewallet.bankAccounts.delete({
+				id: bankAccount.id
+			});
+			navigate('../', { relative: 'path' });
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not update bank account. Try again.'
+			});
+		}
 	}
 
 	if (bankAccount) {

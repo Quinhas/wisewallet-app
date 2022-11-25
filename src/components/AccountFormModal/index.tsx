@@ -4,11 +4,13 @@ import {
 	ModalCloseButton,
 	ModalContent,
 	ModalHeader,
-	ModalOverlay
+	ModalOverlay,
+	useToast
 } from '@chakra-ui/react';
 import { AccountForm } from 'components/AccountForm';
-import { useWisewallet } from 'hooks/useWisewallet';
-import { BankAccountDTO } from 'services/wisewalletService/bankAccountsService';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
+import { wisewallet } from 'services/wisewalletService';
+import { errorToast } from 'utils/toastConfig';
 
 interface AccountFormModalProps {
 	isOpen: boolean;
@@ -19,13 +21,28 @@ export default function AccountFormModal({
 	isOpen,
 	onClose
 }: AccountFormModalProps): JSX.Element {
-	const { createBankAccount } = useWisewallet();
+	const toast = useToast();
 
-	function onSubmit(data: BankAccountDTO): void {
-		createBankAccount({
-			bankAccount: data
-		});
-		onClose();
+	async function onSubmit(data: BankAccountDTO): Promise<void> {
+		try {
+			await wisewallet.bankAccounts.create({
+				data
+			});
+			onClose();
+		} catch (error) {
+			if (error instanceof WisewalletApplicationException) {
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
+			}
+
+			toast({
+				...errorToast,
+				description: 'Could not create bank account. Try again.'
+			});
+		}
 	}
 
 	return (

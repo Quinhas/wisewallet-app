@@ -65,15 +65,11 @@ export function SignInPage(): JSX.Element {
 			});
 		} catch (error) {
 			if (error instanceof WisewalletApplicationException) {
-				if (error.errors?.length !== 0) {
-					error.errors?.forEach((err) => {
-						toast({
-							...errorToast,
-							description: err.message
-						});
-					});
-					return;
-				}
+				toast({
+					...errorToast,
+					description: error.message
+				});
+				return;
 			}
 
 			toast({
