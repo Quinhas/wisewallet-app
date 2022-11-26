@@ -1,0 +1,27 @@
+{
+	"name": "Wisewallet",
+	"short_name": "Wisewallet",
+	"description": "Track your spending and manage your money in a wise, fast and easy way!",
+	"start_url": "/",
+	"display": "fullscreen",
+	"background_color": "#fff",
+	"lang": "en",
+	"scope": "/",
+	"id": "/",
+	"icons": [
+		{
+			"src": "/android-chrome-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "/android-chrome-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"theme_color": "#7869E2",
+	"orientation": "portrait"
+}

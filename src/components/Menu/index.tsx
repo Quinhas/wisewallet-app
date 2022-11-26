@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 const pages = [
 	{
-		name: 'Início',
+		name: 'Home',
 		href: '/'
 	},
 	{

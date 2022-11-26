@@ -8,17 +8,17 @@ export default function Tabs(): JSX.Element {
 	const tabs = [
 		{
 			icon: UserCircleGear,
-			text: 'Perfil',
+			text: 'Profile',
 			href: '/profile'
 		},
 		{
 			icon: HouseLine,
-			text: 'Início',
+			text: 'Home',
 			href: '/'
 		},
 		{
 			icon: Receipt,
-			text: 'Extrato',
+			text: 'Statement',
 			href: '/account-statement'
 		}
 		// {
