@@ -12,9 +12,6 @@ export default defineConfig({
 			manifestFilename: './manifest.json',
 			scope: '/',
 			registerType: 'autoUpdate',
-			devOptions: {
-				enabled: true,
-			}
 		})
 	],
 })

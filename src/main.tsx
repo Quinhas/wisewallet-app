@@ -7,6 +7,8 @@ import '@fontsource/montserrat/400.css'; // Regular
 import '@fontsource/montserrat/500.css'; // Medium
 import '@fontsource/montserrat/600.css'; // Semibold
 import '@fontsource/montserrat/700.css'; // Bold
+import '@fontsource/poppins/100.css';
+import '@fontsource/poppins/200.css';
 import '@fontsource/poppins/300.css';
 import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';

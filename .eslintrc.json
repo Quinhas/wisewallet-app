@@ -49,7 +49,8 @@
 			{
 				"usePrettierrc": true
 			}
-		]
+		],
+		"@typescript-eslint/no-shadow": "off"
 	},
 	"ignorePatterns": [
 		"/src/vite-env.d.ts"
