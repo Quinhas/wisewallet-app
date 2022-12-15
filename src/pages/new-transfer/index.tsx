@@ -15,7 +15,6 @@ export function NewTransferPage(): JSX.Element {
 	const navigate = useNavigate();
 
 	function onSubmit(data: FormFields): void {
-		console.log(data);
 		navigate('/', { relative: 'path' });
 	}
 

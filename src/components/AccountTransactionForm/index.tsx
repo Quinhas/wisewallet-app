@@ -30,7 +30,7 @@ import {
 	invalidDateMessage,
 	maxLengthMessage,
 	requiredFieldMessage,
-	valueGreaterThanZeroMessage
+	valueGreaterThanMessage
 } from 'utils/formValidationMessages';
 import * as yup from 'yup';
 
@@ -76,7 +76,7 @@ export function AccountTransactionForm({
 				then: (schema) =>
 					schema.max(availableBalance.value ?? 0, insufficientBalanceMessage)
 			})
-			.min(0.01, valueGreaterThanZeroMessage),
+			.min(0.01, valueGreaterThanMessage('zero')),
 		date: yup
 			.date()
 			.required(requiredFieldMessage)

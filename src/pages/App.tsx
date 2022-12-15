@@ -1,5 +1,6 @@
 import { Button, Divider, Flex, Spinner, Text } from '@chakra-ui/react';
 import { AccountsList } from 'components/AccountsList';
+import { CardsList } from 'components/CardsList';
 import { useAuth } from 'hooks/useAuth';
 import { useCallback, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
@@ -100,9 +101,20 @@ export default function Home(): JSX.Element {
 			<Divider
 				maxW="calc(100vw - 3rem)"
 				mx="auto"
-				my="0.5rem"
+				my={['0.5rem', '1rem']}
 			/>
 			<AccountsList />
+			<Divider
+				maxW="calc(100vw - 3rem)"
+				mx="auto"
+				my={['0.5rem', '1rem']}
+			/>
+			<CardsList />
+			<Divider
+				maxW="calc(100vw - 3rem)"
+				mx="auto"
+				my={['0.5rem', '1rem']}
+			/>
 		</>
 	);
 }

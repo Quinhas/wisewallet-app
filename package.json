@@ -33,6 +33,7 @@
 		"phosphor-react": "^1.4.1",
 		"react": "^18.2.0",
 		"react-currency-format": "^1.1.0",
+		"react-currency-input-field": "^3.6.9",
 		"react-dom": "^18.2.0",
 		"react-hook-form": "^7.38.0",
 		"react-intl-currency-input": "^0.2.6",

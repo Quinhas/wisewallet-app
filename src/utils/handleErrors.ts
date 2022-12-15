@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 
 export function handleKnownError(error: WisewalletApplicationException): null {

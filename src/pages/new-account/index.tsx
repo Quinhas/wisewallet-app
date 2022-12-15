@@ -46,7 +46,7 @@ export function NewAccountPage(): JSX.Element {
 				gap="0.5rem"
 			>
 				<IconButton
-					aria-label="Return to account"
+					aria-label="Return"
 					icon={<ArrowLeft />}
 					size="xs"
 					minHeight="2rem"

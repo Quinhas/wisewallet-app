@@ -3,6 +3,8 @@ import type { GlobalStyleProps } from '@chakra-ui/theme-tools';
 import { mode } from '@chakra-ui/theme-tools';
 import { AccountCard } from './styledComponents/AccountCard';
 import { Button } from './styledComponents/Button';
+import { Card } from './styledComponents/Card';
+import { CardStatementItem } from './styledComponents/CardStatementItem';
 import { Checkbox } from './styledComponents/Checkbox';
 import { Input } from './styledComponents/Input';
 import { Link } from './styledComponents/Link';
@@ -144,7 +146,9 @@ const theme = extendTheme({
 		Link,
 		Menu,
 		Select,
-		Textarea
+		Textarea,
+		Card,
+		CardStatementItem
 	},
 	styles: {
 		global: (props: GlobalStyleProps) => ({

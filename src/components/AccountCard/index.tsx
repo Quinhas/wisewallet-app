@@ -46,8 +46,8 @@ export default function AccountCard({
 			</Flex>
 			<Box>
 				<Text
-					fontSize="1.5rem"
-					fontWeight="bold"
+					fontSize="1.375rem"
+					fontWeight={600}
 				>
 					{new Intl.NumberFormat('pt-BR', {
 						style: 'currency',

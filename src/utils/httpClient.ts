@@ -1,11 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
+import WisewalletApplicationException from 'errors/WisewalletApplicationException';
 
-const apiLocal = false;
-const prodUrl = apiLocal ? 'http://localhost:3033' : 'https://wisewallet-api-develop.up.railway.app/'
+const baseUrl = import.meta.env.VITE_WISEWALLET_API_URL as unknown as
+	| string
+	| undefined;
+
+if (!baseUrl) {
+	throw new WisewalletApplicationException('API_URL is not defined.');
+}
 
 export const httpClient: AxiosInstance = axios.create({
-	baseURL:
-		process.env.NODE_ENV === 'production'
-			? 'https://wisewallet-api-production.up.railway.app/'
-			: prodUrl
+	baseURL: baseUrl
 });

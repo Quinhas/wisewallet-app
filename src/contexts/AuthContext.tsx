@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import type { ReactNode } from 'react';
 import {
@@ -68,9 +69,13 @@ export function AuthContextProvider({
 					id: decodedToken.id,
 					name: decodedToken.name,
 					email: decodedToken.email,
-					birthdate: format(parseISO(birthdate), 'P'),
-					createdAt: format(parseISO(decodedToken.createdAt), 'PPPp'),
-					updatedAt: format(parseISO(decodedToken.updatedAt), 'PPPp')
+					birthdate: format(parseISO(birthdate), 'P', { locale: ptBR }),
+					createdAt: format(parseISO(decodedToken.createdAt), 'PPPp', {
+						locale: ptBR
+					}),
+					updatedAt: format(parseISO(decodedToken.updatedAt), 'PPPp', {
+						locale: ptBR
+					})
 				};
 			} catch (error) {
 				signOut();
