@@ -3,12 +3,12 @@ declare interface APIBankAccount {
 	name: string;
 	balance: number;
 	holderId: string;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: string;
+	updatedAt: string;
 	transactions?: APIAccountTransaction[];
 }
 
-interface BankAccountDTO {
+interface APIBankAccountDTO {
 	name: string;
 	balance: number;
 }
@@ -16,7 +16,7 @@ interface BankAccountDTO {
 declare interface BankAccountService {
 	getAll: () => Promise<APIBankAccount[]>;
 	getByID: (data: GetByIDParams) => Promise<APIBankAccount>;
-	create: (data: CreateParams<BankAccountDTO>) => Promise<APIBankAccount>;
+	create: (data: CreateParams<APIBankAccountDTO>) => Promise<APIBankAccount>;
 	update: (
 		data: UpdateParams<string, APIBankAccount>
 	) => Promise<APIBankAccount>;

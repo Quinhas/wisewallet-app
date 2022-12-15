@@ -4,16 +4,16 @@ declare interface APIAccountTransaction {
 	title: string;
 	description?: string;
 	value: number;
-	date: Date;
+	date: string;
 	type: 'INCOME' | 'EXPENSE';
 	bankAccountId: string;
 	categoryId?: number;
-	createdAt: Date;
-	updatedAt: Date;
+	createdAt: string;
+	updatedAt: string;
 	bankAccount: APIBankAccount;
 }
 
-interface AccountTransactionDTO {
+interface APIAccountTransactionDTO {
 	title: string;
 	description?: string;
 	value: number;
@@ -28,7 +28,7 @@ declare interface AccountTransactionService {
 	getAll: () => Promise<APIAccountTransaction[]>;
 	getByID: (data: GetByIDParams) => Promise<APIAccountTransaction>;
 	create: (
-		data: CreateParams<AccountTransactionDTO>
+		data: CreateParams<APIAccountTransactionDTO>
 	) => Promise<APIAccountTransaction>;
 	update: (
 		data: UpdateParams<string, APIAccountTransaction>

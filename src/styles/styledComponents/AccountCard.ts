@@ -17,6 +17,7 @@ export const AccountCard = defineStyleConfig({
 			boxShadow: 'sm',
 			minW: ['calc(100% / 2 - 2rem)', 'calc(100% / 2.3 - 2rem)'],
 			flex: '1 1 auto',
+			aspectRatio: '16/9',
 			transition: '0.2s ease-in',
 			cursor: 'pointer',
 			WebkitTapHighlightColor: 'transparent',

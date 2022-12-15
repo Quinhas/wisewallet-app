@@ -12,5 +12,7 @@ export const minLengthMessage = (field: string, min: number): string =>
 export const sameAccountTransferMessage =
 	'The source account and the destination account cannot be the same.';
 export const insufficientBalanceMessage = 'Insufficient balance.';
-export const valueGreaterThanZeroMessage =
-	'The value must be greater than zero.';
+export const insufficientLimitMessage = 'Insufficient limit.';
+export const valueGreaterThanMessage = (value: string): string =>
+	`The value must be greater than ${value}.`;
+export const invalidValueMessage = 'Invalid value.';

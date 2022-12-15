@@ -62,6 +62,7 @@ export function AccountsList(): JSX.Element {
 						display: 'none'
 					}
 				}}
+				py="0.5rem"
 			>
 				{bankAccounts.map((account) => {
 					return (

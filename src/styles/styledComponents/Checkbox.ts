@@ -22,6 +22,9 @@ export const Checkbox = defineStyleConfig({
 						borderColor: `${c}.300`
 					}
 				}
+			},
+			label: {
+				pointerEvents: 'none'
 			}
 		};
 	},
